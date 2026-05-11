@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next"
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -12,7 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://anovic.com";
+/*
+  Use your final primary domain here.
+  If Vercel redirects to non-www, change this to: https://anovic.net
+*/
+const siteUrl = "https://www.anovic.net";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -75,6 +80,12 @@ export const metadata: Metadata = {
     images: ["/og-anovic.jpg"],
   },
 
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+
   robots: {
     index: true,
     follow: true,
@@ -100,7 +111,17 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <link rel="preload" href="/mark.png" as="image" />
+        <link rel="preload" href="/logo.png" as="image" />
+        <link rel="preload" href="/anovic%20white%20logo.png" as="image" />
+        <link rel="preload" href="/og-anovic.jpg" as="image" />
+      </head>
+
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

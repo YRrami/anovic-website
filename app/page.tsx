@@ -263,13 +263,13 @@ const workFilters = [
 // Put your PNG files inside: /public/portfolio/
 // Example: public/portfolio/brand-identity.png becomes /portfolio/brand-identity.png
 const portfolioImages = {
-  featured: "/portfolio/featured-work.webp",
-  branding: "/portfolio/branding.webp",
-  marketing: "/portfolio/campaigns.webp",
-  software: "/portfolio/software.webp",
-  outdoor: "/portfolio/outdoor.webp",
-  media: "/portfolio/media-production.webp",
-  business: "/portfolio/business-strategy-pack.webp",
+  featured: "/portfolio/featured-work.png",
+  branding: "/portfolio/branding.png",
+  marketing: "/portfolio/campaigns.png",
+  software: "/portfolio/software.png",
+  outdoor: "/portfolio/outdoor.png",
+  media: "/portfolio/media-production.png",
+  business: "/portfolio/business-strategy-pack.png",
 };
 
 const mockupPalettes = {
@@ -401,7 +401,7 @@ function createWorkMockup({ title, label, tone, pattern }: WorkMockupOptions) {
 }
 
 const featuredWork = {
-  title: "Anonvic Brand System",
+  title: "Anovic Brand System",
   category: "Featured Concept",
   label: "Internal Case Study",
   headline: "From empty space to a brand that looks like it has a plan.",
@@ -411,7 +411,7 @@ const featuredWork = {
   services: ["Branding", "Website", "Content Direction", "Lead Flow"],
   image: portfolioImages.featured,
   fallbackImage: createWorkMockup({
-    title: "Anonvic System",
+    title: "Anovic System",
     label: "Featured Work",
     tone: "dark",
     pattern: "website",
@@ -593,8 +593,8 @@ const BUSINESS_EMAIL = "business@anovic.com";
 const EMAIL_SUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${BUSINESS_EMAIL}`;
 
 // Add your PDF here later:
-// public/portfolio/anonvic-portfolio.pdf
-const PORTFOLIO_PDF_FILE = "/portfolio/anonvic-portfolio.pdf";
+// public/portfolio/anovic-portfolio.pdf
+const PORTFOLIO_PDF_FILE = "/portfolio/anovic-portfolio.pdf";
 
 type SubmissionStatus = "idle" | "sending" | "success" | "error";
 
@@ -620,10 +620,26 @@ async function sendToBusinessEmail(payload: Record<string, string>) {
     throw new Error("Unable to submit the form right now.");
   }
 }
+function AnovicInitialLoader({ show }: { show: boolean }) {
+  if (!show) return null;
+
+  return (
+    <div className="anovic-loader-screen" aria-label="Loading Anovic">
+      <img
+        src="/mark.png"
+        alt="Anovic loading mark"
+        className="anovic-loader-mark"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+  );
+}
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [leadValue, setLeadValue] = useState("");
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [leadStatus, setLeadStatus] = useState<SubmissionStatus>("idle");
   const [contactStatus, setContactStatus] = useState<SubmissionStatus>("idle");
 
@@ -641,7 +657,7 @@ export default function Home() {
       setLeadStatus("sending");
 
       await sendToBusinessEmail({
-        _subject: "New hero lead from Anonvic website",
+        _subject: "New hero lead from Anovic website",
         Form: "Hero quick lead form",
         "Email or Phone": cleanLead,
         "Submitted From": window.location.href,
@@ -688,6 +704,36 @@ export default function Home() {
     }
   };
 
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    const minimumLoaderTime = 3000;
+
+    const hideLoader = () => {
+      const elapsed = Date.now() - startedAt;
+      const remainingTime = Math.max(0, minimumLoaderTime - elapsed);
+
+      window.setTimeout(() => {
+        setIsInitialLoading(false);
+      }, remainingTime);
+    };
+
+    const safetyTimer = window.setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 7000);
+
+    if (document.readyState === "complete") {
+      hideLoader();
+    } else {
+      window.addEventListener("load", hideLoader, { once: true });
+    }
+
+    return () => {
+      window.clearTimeout(safetyTimer);
+      window.removeEventListener("load", hideLoader);
+    };
+  }, []);
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
 
@@ -713,17 +759,20 @@ export default function Home() {
 
   return (
     <main className="paper-app min-h-screen overflow-hidden text-stone-950">
+      <AnovicInitialLoader show={isInitialLoading} />
       <div className="paper-world-bg" aria-hidden="true" />
 
       {/* Header */}
       <header className="fixed left-0 top-0 z-50 w-full px-3 pt-3 sm:px-4 sm:pt-5">
         <div className="glass-orbit-header mx-auto max-w-7xl">
-          <a href="#home" className="brand-orbit group" aria-label="Anonvic home">
+          <a href="#home" className="brand-orbit group" aria-label="Anovic home">
             <span className="logo-plain-mark">
               <img
                 src="/logo.png"
-                alt="Anonvic logo"
+                alt="Anovic logo"
                 className="h-full w-full object-contain"
+                loading="eager"
+                decoding="async"
               />
             </span>
           </a>
@@ -784,13 +833,15 @@ export default function Home() {
                 href="#home"
                 onClick={() => setOpen(false)}
                 className="drawer-brand-lockup"
-                aria-label="Anonvic home"
+                aria-label="Anovic home"
               >
              
                   <img
                     src="/anovic white logo.png"
-                    alt="Anonvic logo"
+                    alt="Anovic logo"
                     className="h-full w-full object-contain"
+                    loading="eager"
+                    decoding="async"
                   />
             
                
@@ -1402,7 +1453,7 @@ export default function Home() {
             <div className="work-action-row">
               <a
                 href={PORTFOLIO_PDF_FILE}
-                download="Anonvic-Portfolio.pdf"
+                download="Anovic-Portfolio.pdf"
                 className="work-download-btn"
               >
                 <span aria-hidden="true">↓</span>
@@ -1435,6 +1486,10 @@ export default function Home() {
                 <img
                   src={featuredWork.image}
                   alt={`${featuredWork.title} portfolio preview`}
+                  width={448}
+                  height={336}
+                  loading="lazy"
+                  decoding="async"
                   onError={(event) => {
                     event.currentTarget.onerror = null;
                     event.currentTarget.src = featuredWork.fallbackImage;
@@ -1485,6 +1540,10 @@ export default function Home() {
                   <img
                     src={project.image}
                     alt={`${project.title} portfolio preview`}
+                    width={448}
+                    height={336}
+                    loading="lazy"
+                    decoding="async"
                     onError={(event) => {
                       event.currentTarget.onerror = null;
                       event.currentTarget.src = project.fallbackImage;
@@ -1525,7 +1584,7 @@ export default function Home() {
 
           <div className="work-before-after-strip">
             <div>
-              <span>Before Anonvic</span>
+              <span>Before Anovic</span>
               <strong>Good business, unclear image.</strong>
             </div>
             <div>
@@ -1533,7 +1592,7 @@ export default function Home() {
               <strong>Brand, content, campaigns, websites, and strategy.</strong>
             </div>
             <div>
-              <span>After Anonvic</span>
+              <span>After Anovic</span>
               <strong>Sharper presence people can trust and remember.</strong>
             </div>
           </div>
@@ -1547,7 +1606,7 @@ export default function Home() {
               <a href="#contact-us">Start a Project</a>
               <a
                 href={PORTFOLIO_PDF_FILE}
-                download="Anonvic-Portfolio.pdf"
+                download="Anovic-Portfolio.pdf"
                 className="work-cta-download"
               >
                 Download PDF
@@ -1830,7 +1889,7 @@ export default function Home() {
                 </div>
 
                 <div className="contact-social-panel-v2" aria-label="Social media links">
-                  <span>Follow Anonvic</span>
+                  <span>Follow Anovic</span>
                   <div className="social-icon-list social-icon-list-dark">
                     {socialLinks.map((social) => (
                       <a
@@ -2021,8 +2080,8 @@ export default function Home() {
         <div className="footer-shell-v2 mx-auto max-w-7xl px-4 py-12 sm:px-5 md:px-8">
           <div className="footer-top-v2">
             <div className="footer-brand-v2">
-              <a href="#home" aria-label="Anonvic home">
-                <img src="/logo white.png" alt="Anonvic logo" />
+              <a href="#home" aria-label="Anovic home">
+                <img src="/logo white.png" alt="Anovic logo" loading="lazy" decoding="async" />
               </a>
               <p>
                 Integrated marketing, creative production, PR, business consulting, and
@@ -2060,7 +2119,7 @@ export default function Home() {
           </div>
 
           <div className="footer-bottom-v2">
-            <p>© {new Date().getFullYear()} Anonvic. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Anovic. All rights reserved.</p>
             <p>Salah Salem St., El Obour Buildings, Building No. 1, 4th Floor, Office 46</p>
           </div>
         </div>
