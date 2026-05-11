@@ -263,13 +263,13 @@ const workFilters = [
 // Put your PNG files inside: /public/portfolio/
 // Example: public/portfolio/brand-identity.png becomes /portfolio/brand-identity.png
 const portfolioImages = {
-  featured: "/portfolio/featured-work.webp",
-  branding: "/portfolio/branding.webp",
-  marketing: "/portfolio/campaigns.webp",
-  software: "/portfolio/software.webp",
-  outdoor: "/portfolio/outdoor.webp",
-  media: "/portfolio/media-production.webp",
-  business: "/portfolio/business-strategy-pack.webp",
+  featured: "/portfolio/image.png",
+  branding: "/portfolio/branding.png",
+  marketing: "/portfolio/campaigns.png",
+  software: "/portfolio/image1.png",
+  outdoor: "/portfolio/Design.png",
+  media: "/portfolio/media-production.png",
+  business: "/portfolio/business-strategy-pack.png",
 };
 
 const mockupPalettes = {
