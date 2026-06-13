@@ -112,6 +112,7 @@ export type Dict = {
     filters: string[];
     download: string;
     downloadHint: string;
+    preview: { kicker: string; heading: string; text: string; openFull: string; frameName: string; load: string; note: string };
     featuredLabel: string;
     featuredHeadline: string;
     featuredStory: string;
@@ -365,6 +366,15 @@ const en: Dict = {
     filters: ["All", "Branding", "Marketing", "Media", "Outdoor", "Software", "Business"],
     download: "Download Portfolio PDF",
     downloadHint: "Full company portfolio, ready for offline sharing.",
+    preview: {
+      kicker: "Portfolio Preview",
+      heading: "Flip through the full Anovic portfolio.",
+      text: "Browse our complete company portfolio right here, or open it full-screen for a closer look.",
+      openFull: "Open in Full Window",
+      frameName: "anovic-portfolio.pdf",
+      load: "Load inline preview",
+      note: "Large file (~46 MB) — load it here on demand, or open it full-screen for the smoothest view.",
+    },
     featuredLabel: "Internal Case Study",
     featuredHeadline: "From empty space to a brand that looks like it has a plan.",
     featuredStory: "We turned the messy starting point into a clear visual language, service story, website direction, and lead capture flow — the same process we use for client projects.",
@@ -673,6 +683,15 @@ const ar: Dict = {
     filters: ["الكل", "العلامة", "التسويق", "الإعلام", "الخارجية", "البرمجيات", "الأعمال"],
     download: "تحميل ملف الأعمال PDF",
     downloadHint: "ملف الشركة الكامل، جاهز للمشاركة دون اتصال.",
+    preview: {
+      kicker: "معاينة الأعمال",
+      heading: "تصفّح ملف أعمال أنوفيك الكامل.",
+      text: "تصفّح ملف الشركة الكامل هنا، أو افتحه بملء الشاشة لإلقاء نظرة أقرب.",
+      openFull: "افتح في نافذة كاملة",
+      frameName: "anovic-portfolio.pdf",
+      load: "تحميل المعاينة هنا",
+      note: "ملف كبير (~46 ميجابايت) — حمّله هنا عند الطلب، أو افتحه بملء الشاشة لأفضل عرض.",
+    },
     featuredLabel: "دراسة حالة داخلية",
     featuredHeadline: "من فراغ إلى علامة تبدو وكأن لديها خطة.",
     featuredStory: "حوّلنا نقطة البداية الفوضوية إلى لغة بصرية واضحة، وقصة خدمات، واتجاه موقع، ومسار لجمع العملاء — نفس العملية التي نستخدمها لمشاريع العملاء.",
@@ -981,6 +1000,15 @@ const es: Dict = {
     filters: ["Todo", "Branding", "Marketing", "Medios", "Exterior", "Software", "Negocio"],
     download: "Descargar Portafolio PDF",
     downloadHint: "Portafolio completo de la empresa, listo para compartir offline.",
+    preview: {
+      kicker: "Vista previa del portafolio",
+      heading: "Hojea el portafolio completo de Anovic.",
+      text: "Explora nuestro portafolio completo aquí mismo, o ábrelo en pantalla completa para verlo de cerca.",
+      openFull: "Abrir en ventana completa",
+      frameName: "anovic-portfolio.pdf",
+      load: "Cargar vista previa",
+      note: "Archivo grande (~46 MB) — cárgalo aquí cuando quieras, o ábrelo en pantalla completa para verlo mejor.",
+    },
     featuredLabel: "Caso de estudio interno",
     featuredHeadline: "De un espacio vacío a una marca que parece tener un plan.",
     featuredStory: "Convertimos el punto de partida desordenado en un lenguaje visual claro, una historia de servicios, una dirección de sitio web y un flujo de captación de leads — el mismo proceso que usamos para clientes.",

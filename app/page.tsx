@@ -265,7 +265,7 @@ const EMAIL_SUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${BUSINESS_EMAIL}`;
 
 // Add your PDF here later:
 // public/portfolio/anovic-portfolio.pdf
-const PORTFOLIO_PDF_FILE = "/portfolio/Anovic Portfolio 2021-2026.pdf";
+const PORTFOLIO_PDF_FILE = "/portfolio/anovic-portfolio.pdf";
 
 type SubmissionStatus = "idle" | "sending" | "success" | "error";
 
@@ -1171,6 +1171,97 @@ export default function Home() {
                 {t.work.download}
               </a>
               <small>{t.work.downloadHint}</small>
+            </div>
+          </div>
+
+          {/* Portfolio PDF preview */}
+          <div className="pdf-preview-card">
+            <span className="tape tape-left" />
+            <div className="pdf-preview-head">
+              <div>
+                <p className="section-kicker">
+                  <span className="kicker-dot" />
+                  {t.work.preview.kicker}
+                </p>
+                <h3>{t.work.preview.heading}</h3>
+                <p className="pdf-preview-text">{t.work.preview.text}</p>
+              </div>
+
+              <div className="pdf-preview-actions">
+                <a
+                  href={PORTFOLIO_PDF_FILE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pdf-open-btn"
+                >
+                  <span aria-hidden="true">⤢</span>
+                  {t.work.preview.openFull}
+                </a>
+                <a
+                  href={PORTFOLIO_PDF_FILE}
+                  download="Anovic-Portfolio.pdf"
+                  className="pdf-download-btn"
+                >
+                  <span aria-hidden="true">↓</span>
+                  {t.work.download}
+                </a>
+              </div>
+            </div>
+
+            <div className="pdf-frame-wrap">
+              <div className="pdf-frame-toolbar" dir="ltr">
+                <span className="pdf-dot pdf-dot-red" />
+                <span className="pdf-dot pdf-dot-yellow" />
+                <span className="pdf-dot pdf-dot-green" />
+                <span className="pdf-frame-name">{t.work.preview.frameName}</span>
+                <a
+                  href={PORTFOLIO_PDF_FILE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pdf-frame-expand"
+                  aria-label={t.work.preview.openFull}
+                  title={t.work.preview.openFull}
+                >
+                  ⤢
+                </a>
+              </div>
+
+              <iframe
+                src={`${PORTFOLIO_PDF_FILE}#view=FitH&toolbar=1`}
+                title={t.work.preview.heading}
+                className="pdf-frame"
+                loading="lazy"
+              />
+
+              {/* Mobile browsers render PDFs poorly inline — show a prompt instead. */}
+              <div className="pdf-frame-fallback">
+                <span className="pdf-placeholder-doc" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" width="56" height="56">
+                    <path
+                      d="M12 4h17l9 9v31a0 0 0 0 1 0 0H12a0 0 0 0 1 0 0V4Z"
+                      fill="#fff8e8"
+                      stroke="#1c1917"
+                      strokeWidth="2.5"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M29 4v9h9" fill="#ecdcc0" stroke="#1c1917" strokeWidth="2.5" strokeLinejoin="round" />
+                    <rect x="17" y="24" width="14" height="3" rx="1.5" fill="#7e22ce" />
+                    <rect x="17" y="31" width="10" height="3" rx="1.5" fill="#1c1917" opacity="0.35" />
+                  </svg>
+                </span>
+
+                <p>{t.work.preview.text}</p>
+
+                <a
+                  href={PORTFOLIO_PDF_FILE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pdf-open-btn"
+                >
+                  <span aria-hidden="true">⤢</span>
+                  {t.work.preview.openFull}
+                </a>
+              </div>
             </div>
           </div>
 
