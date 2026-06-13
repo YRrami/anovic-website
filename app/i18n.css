@@ -1,0 +1,215 @@
+/* =========================================================
+   LANGUAGE SWITCHER + RTL ADJUSTMENTS
+   Loaded by page.tsx after the theme stylesheets.
+   ========================================================= */
+
+/* ── Switcher (header glass pill) ───────────────────────── */
+.lang-switch {
+  position: relative;
+  z-index: 3;
+}
+
+.lang-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+  padding: 9px 12px;
+  color: #44403c;
+  font-size: 12px;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 8px 18px rgba(80, 52, 25, 0.05);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+}
+
+.lang-switch-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(168, 85, 247, 0.24);
+}
+
+.lang-switch-globe {
+  width: 17px;
+  height: 17px;
+  color: #7e22ce;
+}
+
+.lang-switch-current {
+  min-width: 16px;
+  text-align: center;
+}
+
+.lang-switch-caret {
+  font-size: 9px;
+  color: #78716c;
+  transition: transform 200ms ease;
+}
+
+.lang-switch-caret.is-open {
+  transform: rotate(180deg);
+}
+
+.lang-switch-btn:focus-visible {
+  outline: 3px solid rgba(217, 249, 157, 0.72);
+  outline-offset: 3px;
+}
+
+/* ── Dropdown menu ──────────────────────────────────────── */
+.lang-switch-menu {
+  /* position + size come from inline styles (position: fixed) so the
+     menu escapes the header pill / drawer overflow:hidden clipping. */
+  z-index: 200;
+  margin: 0;
+  padding: 7px;
+  list-style: none;
+  border: 1px solid rgba(41, 37, 36, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 248, 232, 0.98);
+  box-shadow:
+    0 24px 50px rgba(80, 52, 25, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  animation: langMenuIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes langMenuIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lang-switch-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 11px;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  padding: 10px 11px;
+  color: #44403c;
+  font-size: 0.86rem;
+  font-weight: 850;
+  cursor: pointer;
+  text-align: start;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.lang-switch-item:hover {
+  background: rgba(243, 232, 255, 0.8);
+  transform: translateX(2px);
+}
+
+[dir="rtl"] .lang-switch-item:hover {
+  transform: translateX(-2px);
+}
+
+.lang-switch-item.is-active {
+  background: rgba(190, 242, 100, 0.34);
+}
+
+.lang-switch-badge {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(28, 25, 23, 0.92);
+  color: #d9f99d;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.lang-switch-name {
+  flex: 1;
+}
+
+.lang-switch-check {
+  color: #4d7c0f;
+  font-weight: 950;
+}
+
+/* ── Drawer variant (sits on the dark drawer) ───────────── */
+.drawer-lang-row {
+  margin-bottom: 10px;
+}
+
+.lang-switch-drawer .lang-switch-btn {
+  width: 100%;
+  justify-content: center;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.lang-switch-drawer .lang-switch-globe {
+  color: #d9f99d;
+}
+
+.lang-switch-drawer .lang-switch-caret {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================================
+   RTL MIRRORING
+   Flips the handful of physically-positioned bits that don't
+   auto-mirror from dir alone. Grid/flex order already follows
+   direction, so only these explicit offsets need help.
+   ========================================================= */
+[dir="rtl"] .glass-orbit-header {
+  padding: 10px 20px 10px 14px;
+}
+
+[dir="rtl"] .header-right-cluster {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .tape-left {
+  left: auto;
+  right: 22%;
+}
+
+/* Drawer slides in from the left in RTL */
+[dir="rtl"] .drawer-paper {
+  border-left: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+[dir="rtl"] .drawer-panel {
+  animation-name: drawerInRtl;
+}
+
+@keyframes drawerInRtl {
+  from { transform: translateX(-100%) scale(0.985); opacity: 0; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+[dir="rtl"] .drawer-nav-link:hover {
+  transform: translateX(7px);
+}
+
+/* Keep Latin contact details (phones, email) rendering LTR
+   even inside an RTL column. */
+[dir="rtl"] .contact-info-card-v2 a[href^="tel:"],
+[dir="rtl"] .contact-info-card-v2 a[href^="mailto:"],
+[dir="rtl"] .footer-links-v2 a[href^="tel:"],
+[dir="rtl"] .footer-links-v2 a[href^="mailto:"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* The scribble underline sits under the start edge */
+[dir="rtl"] .headline-scribble::after {
+  left: auto;
+  right: 0;
+}

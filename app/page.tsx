@@ -2,238 +2,61 @@
 "use client";
 import "./test.css";
 import "./our-work.css";
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
+import "./i18n.css";
+import AnovicChat from "./components/AnovicChat";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { useLanguage } from "./i18n/LanguageProvider";
+import {
+  type CSSProperties,
+  type FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Services", href: "#services" },
-  { label: "Our Work", href: "#our-work" },
-  { label: "About", href: "#about" },
-  { label: "Why Us", href: "#why-us" },
-  { label: "Contact Us", href: "#contact-us" },
+// ── Static (language-neutral) visual config ───────────────
+// Text for each of these comes from the i18n dictionary; only
+// the non-translatable visual props live here, zipped by index.
+
+const navHrefs = ["#home", "#services", "#our-work", "#about", "#why-us", "#contact-us"];
+
+const serviceVisuals = [
+  { number: "01", icon: "✦", tone: "purple", noteClass: "service-feature-one" },
+  { number: "02", icon: "↗", tone: "lime", noteClass: "service-feature-two" },
+  { number: "03", icon: "●", tone: "orange", noteClass: "service-feature-three" },
+  { number: "04", icon: "⌘", tone: "stone", noteClass: "service-feature-four" },
 ];
 
-const featuredServices = [
-  {
-    number: "01",
-    title: "Branding & Creative Design",
-    subtitle: "Build a memorable identity",
-    text: "Logo design, brand identity, brand guidelines, company profiles, packaging, print designs, and visual content.",
-    bullets: ["Logo Design", "Brand Identity", "Packaging", "Company Profiles"],
-    note: "Best for positioning, trust, launches, and stronger visual presence.",
-    metric: "Identity",
-    stamp: "Core Service",
-    icon: "✦",
-    tone: "purple",
-    noteClass: "service-feature-one",
-  },
-  {
-    number: "02",
-    title: "Digital Marketing",
-    subtitle: "Reach, attract, and convert",
-    text: "Social media management, content creation, ad management, SEO, email marketing, lead generation, and marketing campaigns.",
-    bullets: ["Social Media", "Paid Ads", "SEO", "Lead Generation"],
-    note: "Best for awareness, performance, audience growth, and lead generation.",
-    metric: "Growth",
-    stamp: "Growth Essential",
-    icon: "↗",
-    tone: "lime",
-    noteClass: "service-feature-two",
-  },
-  {
-    number: "03",
-    title: "Media Production",
-    subtitle: "Create content people remember",
-    text: "Reels, photography, videography, product shoots, video editing, motion graphics, and promotional videos.",
-    bullets: ["Reels", "Videography", "Motion Graphics", "Product Shoots"],
-    note: "Best for storytelling, engagement, product visibility, and campaign content.",
-    metric: "Content",
-    stamp: "Content Power",
-    icon: "●",
-    tone: "orange",
-    noteClass: "service-feature-three",
-  },
-  {
-    number: "04",
-    title: "Software Solutions",
-    subtitle: "Digital tools that support growth",
-    text: "Websites, landing pages, e-commerce platforms, mobile apps, CRM systems, dashboards, automation, and technical support.",
-    bullets: ["Websites", "Landing Pages", "Dashboards", "Automation"],
-    note: "Best for conversion, organization, digital systems, and scalable operations.",
-    metric: "Systems",
-    stamp: "Digital Build",
-    icon: "⌘",
-    tone: "stone",
-    noteClass: "service-feature-four",
-  },
+const supportingVisuals = [
+  { number: "05", color: "bg-[#fff4e8]" },
+  { number: "06", color: "bg-[#f3e8ff]" },
+  { number: "07", color: "bg-[#ecfccb]" },
 ];
 
-const supportingServices = [
-  {
-    number: "05",
-    title: "Outdoor Advertising",
-    label: "Offline Reach",
-    text: "Billboards, banners, flyers, brochures, signage, booth branding, vehicle branding, and outdoor campaign management.",
-    color: "bg-[#fff4e8]",
-  },
-  {
-    number: "06",
-    title: "Public Relations",
-    label: "Reputation",
-    text: "Press releases, media coverage, reputation management, event PR, influencer PR, partnerships, and sponsorship support.",
-    color: "bg-[#f3e8ff]",
-  },
-  {
-    number: "07",
-    title: "Business Solutions",
-    label: "Strategy",
-    text: "Business plans, market research, feasibility studies, pricing strategy, sales strategy, and business growth consulting.",
-    color: "bg-[#ecfccb]",
-  },
+const boardNoteVisuals = [
+  { className: "note-one", tone: "text-purple-700" },
+  { className: "note-two", tone: "text-lime-700" },
+  { className: "note-three", tone: "text-orange-700" },
+  { className: "note-four", tone: "text-stone-500" },
 ];
 
-const boardNotes = [
-  {
-    step: "Step 01",
-    title: "Brand clarity",
-    text: "Define your message, visual style, tone, and market position.",
-    className: "note-one",
-    tone: "text-purple-700",
-  },
-  {
-    step: "Step 02",
-    title: "Campaign system",
-    text: "Turn your strategy into ads, content, offers, and execution.",
-    className: "note-two",
-    tone: "text-lime-700",
-  },
-  {
-    step: "Step 03",
-    title: "Creative assets",
-    text: "Design the visuals your audience remembers and trusts.",
-    className: "note-three",
-    tone: "text-orange-700",
-  },
-  {
-    step: "Result",
-    title: "More attention",
-    text: "Better awareness, stronger leads, and clearer growth.",
-    className: "note-four",
-    tone: "text-stone-500",
-  },
+const scopeRowVisuals = [
+  { number: "01", accent: "purple" },
+  { number: "02", accent: "lime" },
+  { number: "03", accent: "orange" },
+  { number: "04", accent: "stone" },
+  { number: "05", accent: "purple" },
+  { number: "06", accent: "lime" },
+  { number: "07", accent: "orange" },
 ];
 
-const scopeRows = [
-  {
-    number: "01",
-    category: "Branding & Creative Design",
-    tag: "Identity System",
-    scope:
-      "Logo design, brand identity, brand guidelines, company profiles, packaging, print designs, and visual content.",
-    chips: ["Logo", "Guidelines", "Profiles", "Packaging"],
-    accent: "purple",
-  },
-  {
-    number: "02",
-    category: "Digital Marketing",
-    tag: "Growth Engine",
-    scope:
-      "Social media management, content creation, ad management, SEO, email marketing, lead generation, and marketing campaigns.",
-    chips: ["Social", "Ads", "SEO", "Leads"],
-    accent: "lime",
-  },
-  {
-    number: "03",
-    category: "Media Production",
-    tag: "Content Studio",
-    scope:
-      "Reels, photography, videography, product shoots, video editing, motion graphics, and promotional videos.",
-    chips: ["Reels", "Photo", "Video", "Motion"],
-    accent: "orange",
-  },
-  {
-    number: "04",
-    category: "Outdoor Advertising",
-    tag: "Street Visibility",
-    scope:
-      "Billboards, banners, flyers, brochures, signage, booth branding, vehicle branding, and outdoor campaign management.",
-    chips: ["Billboards", "Signage", "Booths", "Vehicles"],
-    accent: "stone",
-  },
-  {
-    number: "05",
-    category: "Public Relations",
-    tag: "Reputation Layer",
-    scope:
-      "Press releases, media coverage, reputation management, event PR, influencer PR, partnerships, and sponsorship support.",
-    chips: ["Press", "Media", "Events", "Partners"],
-    accent: "purple",
-  },
-  {
-    number: "06",
-    category: "Business Solutions",
-    tag: "Business Direction",
-    scope:
-      "Business plans, market research, feasibility studies, pricing strategy, sales strategy, and business growth consulting.",
-    chips: ["Plans", "Research", "Pricing", "Sales"],
-    accent: "lime",
-  },
-  {
-    number: "07",
-    category: "Software Solutions",
-    tag: "Digital Infrastructure",
-    scope:
-      "Websites, landing pages, e-commerce platforms, mobile apps, CRM systems, dashboards, automation, and technical support.",
-    chips: ["Websites", "CRM", "Dashboards", "Automation"],
-    accent: "orange",
-  },
+const whyCardVisuals = [
+  { icon: "🧾", tone: "purple" },
+  { icon: "🤝", tone: "lime" },
+  { icon: "🏠", tone: "orange" },
+  { icon: "🎯", tone: "stone" },
+  { icon: "🧠", tone: "cream" },
 ];
-
-const positioningItems = [
-  "Online + Offline Marketing",
-  "Creative + Production",
-  "PR + Partnerships",
-  "Business + Software",
-];
-
-const whyChooseCards = [
-  {
-    title: "Risk-Free Start",
-    tag: "No Plot Twists",
-    text: "No mystery packages. No surprise invoices. Your budget should not need a therapist.",
-    icon: "🧾",
-    tone: "purple",
-  },
-  {
-    title: "Win-Win Energy",
-    tag: "We Grow Together",
-    text: "Your growth is literally our best marketing. You win, we look smart. Beautiful.",
-    icon: "🤝",
-    tone: "lime",
-  },
-  {
-    title: "One Team, Many Skills",
-    tag: "Less Supplier Chaos",
-    text: "Branding, ads, content, PR, outdoor, and websites — all under one roof, with fewer headaches.",
-    icon: "🏠",
-    tone: "orange",
-  },
-  {
-    title: "Creative With a Job",
-    tag: "Pretty + Useful",
-    text: "Looks good, sounds smart, gets clicks. No decorative nonsense wearing sunglasses.",
-    icon: "🎯",
-    tone: "stone",
-  },
-  {
-    title: "Clear, Not Complicated",
-    tag: "No Marketing Fog",
-    text: "Simple plans. Clear reports. Human explanations. No dashboard that looks like a spaceship manual.",
-    icon: "🧠",
-    tone: "cream",
-  },
-];
-
 
 type WorkMockupPattern =
   | "brand"
@@ -250,18 +73,7 @@ type WorkMockupOptions = {
   pattern: WorkMockupPattern;
 };
 
-const workFilters = [
-  "All",
-  "Branding",
-  "Marketing",
-  "Media",
-  "Outdoor",
-  "Software",
-  "Business",
-];
-
 // Put your PNG files inside: /public/portfolio/
-// Example: public/portfolio/brand-identity.png becomes /portfolio/brand-identity.png
 const portfolioImages = {
   featured: "/portfolio/featured-work.png",
   branding: "/portfolio/branding.png",
@@ -400,141 +212,19 @@ function createWorkMockup({ title, label, tone, pattern }: WorkMockupOptions) {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-const featuredWork = {
-  title: "Anovic Brand System",
-  category: "Featured Concept",
-  label: "Internal Case Study",
-  headline: "From empty space to a brand that looks like it has a plan.",
-  story:
-    "We turned the messy starting point into a clear visual language, service story, website direction, and lead capture flow — the same process we use for client projects.",
-  result: "Clearer identity, stronger first impression, and a website that explains the offer faster.",
-  services: ["Branding", "Website", "Content Direction", "Lead Flow"],
+const featuredWorkVisual = {
   image: portfolioImages.featured,
-  fallbackImage: createWorkMockup({
-    title: "Anovic System",
-    label: "Featured Work",
-    tone: "dark",
-    pattern: "website",
-  }),
+  mockup: { tone: "dark" as const, pattern: "website" as const },
 };
 
-const workProjects = [
-  {
-    title: "Brand Identity Makeover",
-    category: "Branding",
-    label: "Concept Project",
-    description:
-      "A complete identity direction built to make a business look trusted, polished, and ready for serious clients.",
-    before: "Just a logo",
-    after: "Full brand system",
-    result: "Sharper image",
-    services: ["Logo", "Identity", "Guidelines"],
-    tone: "purple",
-    image: portfolioImages.branding,
-    fallbackImage: createWorkMockup({
-      title: "Brand Identity",
-      label: "Branding",
-      tone: "purple",
-      pattern: "brand",
-    }),
-  },
-  {
-    title: "Social Media Growth System",
-    category: "Marketing",
-    label: "Demo Campaign",
-    description:
-      "Content direction, post layouts, campaign ideas, captions, and ad creatives connected around one clear message.",
-    before: "Random posting",
-    after: "Campaign direction",
-    result: "Better attention",
-    services: ["Content", "Ads", "Captions"],
-    tone: "lime",
-    image: portfolioImages.marketing,
-    fallbackImage: createWorkMockup({
-      title: "Social System",
-      label: "Marketing",
-      tone: "lime",
-      pattern: "social",
-    }),
-  },
-  {
-    title: "Website That Converts",
-    category: "Software",
-    label: "Website Mockup",
-    description:
-      "A clean landing experience designed to explain the offer quickly, guide visitors, and push them toward action.",
-    before: "Online brochure",
-    after: "Business tool",
-    result: "Clearer conversion",
-    services: ["UI/UX", "Landing Page", "CTA"],
-    tone: "orange",
-    image: portfolioImages.software,
-    fallbackImage: createWorkMockup({
-      title: "Website Build",
-      label: "Software",
-      tone: "orange",
-      pattern: "website",
-    }),
-  },
-  {
-    title: "Street-Level Visibility",
-    category: "Outdoor",
-    label: "Outdoor Mockup",
-    description:
-      "Billboard, banner, flyer, and signage visuals designed to be understood fast in the real world.",
-    before: "Hard to notice",
-    after: "Seen in seconds",
-    result: "Stronger recall",
-    services: ["Billboard", "Flyers", "Signage"],
-    tone: "stone",
-    image: portfolioImages.outdoor,
-    fallbackImage: createWorkMockup({
-      title: "Outdoor Ads",
-      label: "Outdoor",
-      tone: "stone",
-      pattern: "outdoor",
-    }),
-  },
-  {
-    title: "Content That Stops the Scroll",
-    category: "Media",
-    label: "Production Set",
-    description:
-      "Reels, video frames, product shots, and edit direction that make the brand feel active, modern, and watchable.",
-    before: "Quiet content",
-    after: "Watchable assets",
-    result: "More engagement",
-    services: ["Reels", "Video", "Editing"],
-    tone: "dark",
-    image: portfolioImages.media,
-    fallbackImage: createWorkMockup({
-      title: "Media Kit",
-      label: "Media",
-      tone: "dark",
-      pattern: "media",
-    }),
-  },
-  {
-    title: "Business Strategy Pack",
-    category: "Business",
-    label: "Strategy Sample",
-    description:
-      "A structured direction for pricing, offers, positioning, audience, and growth actions so decisions stop feeling random.",
-    before: "Guessing mode",
-    after: "Clear roadmap",
-    result: "Better decisions",
-    services: ["Pricing", "Research", "Roadmap"],
-    tone: "cream",
-    image: portfolioImages.business,
-    fallbackImage: createWorkMockup({
-      title: "Strategy Pack",
-      label: "Business",
-      tone: "cream",
-      pattern: "strategy",
-    }),
-  },
+const workProjectVisuals = [
+  { tone: "purple", image: portfolioImages.branding, mockup: { tone: "purple" as const, pattern: "brand" as const } },
+  { tone: "lime", image: portfolioImages.marketing, mockup: { tone: "lime" as const, pattern: "social" as const } },
+  { tone: "orange", image: portfolioImages.software, mockup: { tone: "orange" as const, pattern: "website" as const } },
+  { tone: "stone", image: portfolioImages.outdoor, mockup: { tone: "stone" as const, pattern: "outdoor" as const } },
+  { tone: "dark", image: portfolioImages.media, mockup: { tone: "dark" as const, pattern: "media" as const } },
+  { tone: "cream", image: portfolioImages.business, mockup: { tone: "cream" as const, pattern: "strategy" as const } },
 ];
-
 
 // Replace these # links with your real social media profile URLs.
 const socialLinks = [
@@ -570,31 +260,12 @@ const socialLinks = [
   },
 ];
 
-const contactServices = [
-  "Branding & Creative Design",
-  "Digital Marketing",
-  "Media Production",
-  "Outdoor Advertising",
-  "Public Relations",
-  "Business Solutions",
-  "Software Solutions",
-];
-
-const budgetRanges = [
-  "Under 25,000 EGP",
-  "25,000 - 50,000 EGP",
-  "50,000 - 100,000 EGP",
-  "100,000 - 250,000 EGP",
-  "250,000+ EGP",
-  "Not sure yet",
-];
-
-const BUSINESS_EMAIL = "business@anovic.com";
+const BUSINESS_EMAIL = "business@anovic.net";
 const EMAIL_SUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${BUSINESS_EMAIL}`;
 
 // Add your PDF here later:
 // public/portfolio/anovic-portfolio.pdf
-const PORTFOLIO_PDF_FILE = "/portfolio/anovic-portfolio.pdf";
+const PORTFOLIO_PDF_FILE = "/portfolio/Anovic Portfolio 2021-2026.pdf";
 
 type SubmissionStatus = "idle" | "sending" | "success" | "error";
 
@@ -620,6 +291,7 @@ async function sendToBusinessEmail(payload: Record<string, string>) {
     throw new Error("Unable to submit the form right now.");
   }
 }
+
 function AnovicInitialLoader({ show }: { show: boolean }) {
   if (!show) return null;
 
@@ -637,11 +309,26 @@ function AnovicInitialLoader({ show }: { show: boolean }) {
 }
 
 export default function Home() {
+  const { t, dir } = useLanguage();
+
   const [open, setOpen] = useState(false);
   const [leadValue, setLeadValue] = useState("");
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [leadStatus, setLeadStatus] = useState<SubmissionStatus>("idle");
   const [contactStatus, setContactStatus] = useState<SubmissionStatus>("idle");
+  const [activeFilterIndex, setActiveFilterIndex] = useState(0);
+  const [showTop, setShowTop] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  const navLinks = t.nav;
+  const navItems = [
+    { label: navLinks.home, href: navHrefs[0] },
+    { label: navLinks.services, href: navHrefs[1] },
+    { label: navLinks.work, href: navHrefs[2] },
+    { label: navLinks.about, href: navHrefs[3] },
+    { label: navLinks.why, href: navHrefs[4] },
+    { label: navLinks.contact, href: navHrefs[5] },
+  ];
 
   const handleLeadSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -684,6 +371,7 @@ export default function Home() {
 
       await sendToBusinessEmail({
         _subject: "New website contact request",
+        _honey: String(formData.get("_honey") || ""),
         Form: "Contact us project brief form",
         "Full Name": String(formData.get("fullName") || ""),
         "Phone Number": String(formData.get("phone") || ""),
@@ -704,10 +392,9 @@ export default function Home() {
     }
   };
 
-
   useEffect(() => {
     const startedAt = Date.now();
-    const minimumLoaderTime = 3000;
+    const minimumLoaderTime = 900;
 
     const hideLoader = () => {
       const elapsed = Date.now() - startedAt;
@@ -720,7 +407,7 @@ export default function Home() {
 
     const safetyTimer = window.setTimeout(() => {
       setIsInitialLoading(false);
-    }, 7000);
+    }, 4000);
 
     if (document.readyState === "complete") {
       hideLoader();
@@ -757,15 +444,64 @@ export default function Home() {
     };
   }, [open]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setShowTop(window.scrollY > 640);
+      const docEl = document.documentElement;
+      const max = docEl.scrollHeight - docEl.clientHeight;
+      const ratio = max > 0 ? docEl.scrollTop / max : 0;
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${Math.min(
+          1,
+          Math.max(0, ratio),
+        )})`;
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  const allProjects = t.work.projects.map((project, i) => ({
+    ...project,
+    ...workProjectVisuals[i],
+    fallbackImage: createWorkMockup({
+      title: project.title,
+      label: project.label,
+      tone: workProjectVisuals[i].mockup.tone,
+      pattern: workProjectVisuals[i].mockup.pattern,
+    }),
+  }));
+
+  const visibleProjects =
+    activeFilterIndex === 0
+      ? allProjects
+      : allProjects.filter(
+          (project) => project.category === t.work.filters[activeFilterIndex],
+        );
+
+  const featuredFallback = createWorkMockup({
+    title: t.work.featuredHeadline.slice(0, 18),
+    label: t.work.featuredTicket,
+    tone: featuredWorkVisual.mockup.tone,
+    pattern: featuredWorkVisual.mockup.pattern,
+  });
+
+  const activeSocials = socialLinks.filter((social) => social.href !== "#");
+
   return (
-    <main className="paper-app min-h-screen overflow-hidden text-stone-950">
+    <main className="paper-app min-h-screen overflow-hidden text-stone-950" dir={dir}>
       <AnovicInitialLoader show={isInitialLoading} />
       <div className="paper-world-bg" aria-hidden="true" />
 
       {/* Header */}
       <header className="fixed left-0 top-0 z-50 w-full px-3 pt-3 sm:px-4 sm:pt-5">
         <div className="glass-orbit-header mx-auto max-w-7xl">
-          <a href="#home" className="brand-orbit group" aria-label="Anovic home">
+          <a href="#home" className="brand-orbit group" aria-label={t.a11y.home}>
             <span className="logo-plain-mark">
               <img
                 src="/logo.png"
@@ -779,22 +515,24 @@ export default function Home() {
 
           <div className="header-right-cluster">
             <nav className="nav-glass-pill hidden lg:flex" aria-label="Primary navigation">
-              {navLinks.map((link) => (
-                <a key={link.label} href={link.href} className="nav-glass-link">
+              {navItems.map((link) => (
+                <a key={link.href} href={link.href} className="nav-glass-link">
                   {link.label}
                 </a>
               ))}
             </nav>
 
+            <LanguageSwitcher variant="header" />
+
             <a href="#contact-us" className="header-glow-cta hidden lg:inline-flex">
-              Book a Call
+              {t.header.bookCall}
             </a>
 
             <button
               type="button"
               onClick={() => setOpen((current) => !current)}
               className={`mobile-orbit-btn lg:hidden ${open ? "is-open" : ""}`}
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? t.a11y.closeMenu : t.a11y.openMenu}
               aria-controls="mobile-navigation"
               aria-expanded={open}
             >
@@ -823,7 +561,8 @@ export default function Home() {
 
           <aside
             id="mobile-navigation"
-            className="drawer-paper drawer-panel absolute right-0 top-0 flex h-full w-[91%] max-w-[430px] flex-col overflow-hidden p-4 shadow-2xl sm:p-5"
+            className="drawer-paper drawer-panel absolute top-0 flex h-full w-[91%] max-w-[430px] flex-col overflow-hidden p-4 shadow-2xl sm:p-5"
+            style={dir === "rtl" ? { left: 0 } : { right: 0 }}
           >
             <div className="drawer-ambient" aria-hidden="true" />
             <div className="drawer-grain" aria-hidden="true" />
@@ -833,25 +572,22 @@ export default function Home() {
                 href="#home"
                 onClick={() => setOpen(false)}
                 className="drawer-brand-lockup"
-                aria-label="Anovic home"
+                aria-label={t.a11y.home}
               >
-             
-                  <img
-                    src="/anovic white logo.png"
-                    alt="Anovic logo"
-                    className="h-full w-full object-contain"
-                    loading="eager"
-                    decoding="async"
-                  />
-            
-               
+                <img
+                  src="/anovic white logo.png"
+                  alt="Anovic logo"
+                  className="h-full w-full object-contain"
+                  loading="eager"
+                  decoding="async"
+                />
               </a>
 
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 className="drawer-close-btn"
-                aria-label="Close menu"
+                aria-label={t.a11y.closeMenu}
               >
                 <span />
                 <span />
@@ -859,14 +595,14 @@ export default function Home() {
             </div>
 
             <div className="drawer-menu-intro">
-              <span>Menu</span>
-              <p>Choose where you want to go.</p>
+              <span>{t.header.menu}</span>
+              <p>{t.header.menuHint}</p>
             </div>
 
             <nav className="drawer-nav-list" aria-label="Mobile navigation links">
-              {navLinks.map((link, index) => (
+              {navItems.map((link, index) => (
                 <a
-                  key={link.label}
+                  key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className="drawer-nav-link"
@@ -884,18 +620,22 @@ export default function Home() {
             </nav>
 
             <div className="drawer-footer-card">
+              <div className="drawer-lang-row">
+                <LanguageSwitcher variant="drawer" />
+              </div>
+
               <a
                 href="#contact-us"
                 onClick={() => setOpen(false)}
                 className="drawer-cta"
               >
-                <span>Start a Project</span>
+                <span>{t.header.startProject}</span>
                 <strong aria-hidden="true">↗</strong>
               </a>
 
               <div className="drawer-contact-row">
-                <a href="tel:01148000500">Call</a>
-                <a href="mailto:business@anovic.com">Email</a>
+                <a href="tel:+201148000500">{t.header.call}</a>
+                <a href="mailto:business@anovic.net">{t.header.email}</a>
               </div>
             </div>
           </aside>
@@ -908,27 +648,24 @@ export default function Home() {
         className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-center gap-12 px-4 pb-16 pt-28 sm:px-5 sm:pt-32 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 xl:gap-20"
       >
         <div className="hero-copy relative">
-          <div className="mb-6 inline-flex -rotate-1 items-center gap-2 rounded-full border border-stone-950/10 bg-white/70 px-4 py-2 text-xs font-black text-stone-600 shadow-sm backdrop-blur sm:mb-7 sm:text-sm">
-            <span className="h-2.5 w-2.5 rounded-full bg-lime-300 ring-4 ring-lime-200/70" />
-            Business & Marketing Solutions
+          <div className="hero-badge mb-6 inline-flex -rotate-1 items-center gap-2 rounded-full border border-stone-950/10 bg-white/70 px-4 py-2 text-xs font-black text-stone-600 shadow-sm backdrop-blur sm:mb-7 sm:text-sm">
+            <span className="hero-badge-dot h-2.5 w-2.5 rounded-full bg-lime-300 ring-4 ring-lime-200/70" />
+            {t.hero.badge}
           </div>
 
           <h1 className="max-w-4xl text-[3.15rem] font-black leading-[0.92] tracking-tight text-stone-950 sm:text-6xl lg:text-7xl xl:text-8xl">
-            Your next
+            {t.hero.h1a}
             <br />
-            big brand idea,
+            {t.hero.h1b}
             <br />
             <span className="relative inline-block">
-              Growth delivered.
-              <span className="absolute bottom-1 left-0 -z-10 h-5 w-full rotate-[-1deg] bg-lime-300/80 sm:h-6 lg:h-7" />
+              {t.hero.h1c}
+              <span className="hero-marker absolute bottom-1 left-0 -z-10 h-5 w-full rotate-[-1deg] bg-lime-300/80 sm:h-6 lg:h-7" />
             </span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 sm:mt-7 sm:text-xl">
-            We provide integrated solutions that combine strategy, creativity,
-            marketing, media production, outdoor advertising, PR, business
-            consulting, and digital technology to help brands grow
-            professionally.
+          <p className="mt-6 max-w-xl text-base leading-8 text-stone-600 sm:mt-7 sm:text-lg">
+            {t.hero.subtitle}
           </p>
 
           <form
@@ -937,17 +674,17 @@ export default function Home() {
             aria-label="Lead capture form"
           >
             <div className="hero-lead-content">
-              <span className="hero-lead-pill">Free growth idea</span>
+              <span className="hero-lead-pill">{t.hero.leadPill}</span>
 
               <div className="hero-lead-text">
-                <strong>One quick idea. No long forms.</strong>
-                <p>Drop your email or WhatsApp and we’ll send a clear first move.</p>
+                <strong>{t.hero.leadStrong}</strong>
+                <p>{t.hero.leadText}</p>
               </div>
             </div>
 
             <div className="hero-lead-field">
               <label className="sr-only" htmlFor="hero-lead-contact">
-                Email or phone number
+                {t.hero.leadPlaceholder}
               </label>
 
               <span className="hero-lead-icon" aria-hidden="true">
@@ -961,7 +698,7 @@ export default function Home() {
                 inputMode="text"
                 value={leadValue}
                 onChange={(event) => setLeadValue(event.target.value)}
-                placeholder="Email or WhatsApp"
+                placeholder={t.hero.leadPlaceholder}
                 className="hero-lead-input"
               />
 
@@ -970,7 +707,7 @@ export default function Home() {
                 className="hero-lead-submit"
                 disabled={leadStatus === "sending"}
               >
-                {leadStatus === "sending" ? "Sending..." : "Send Idea"}
+                {leadStatus === "sending" ? t.hero.leadSending : t.hero.leadSend}
               </button>
             </div>
 
@@ -986,18 +723,18 @@ export default function Home() {
                 role="status"
               >
                 {leadStatus === "success"
-                  ? "Received. We will contact you soon."
+                  ? t.hero.leadSuccess
                   : leadStatus === "sending"
-                    ? "Sending your contact..."
-                    : "Please enter a valid email or phone number, or try again."}
+                    ? t.hero.leadSendingMsg
+                    : t.hero.leadError}
               </p>
             )}
           </form>
 
           <div className="hero-social-row" aria-label="Social media links">
-            <span>Follow the work</span>
+            <span>{t.hero.follow}</span>
             <div className="social-icon-list">
-              {socialLinks.map((social) => (
+              {activeSocials.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
@@ -1015,39 +752,26 @@ export default function Home() {
               ))}
             </div>
           </div>
-
-          <div className="mt-8 flex flex-wrap gap-3 sm:mt-10">
-            {["Branding", "Marketing", "Production", "PR", "Software"].map(
-              (item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-stone-950/10 bg-white/60 px-4 py-2 text-sm font-black text-stone-600 shadow-sm backdrop-blur"
-                >
-                  {item}
-                </span>
-              )
-            )}
-          </div>
         </div>
 
         {/* Board */}
         <div className="hero-board relative">
           <div className="hanging-note hanging-note-left hidden lg:block">
-            New idea ✦
+            {t.board.hangLeft}
           </div>
 
           <div className="hanging-note hanging-note-right hidden lg:block">
-            Launch plan
+            {t.board.hangRight}
           </div>
 
           <div className="studio-board mx-auto max-w-2xl">
             <div className="board-toolbar">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-stone-500 sm:text-xs">
-                  Strategy Board
+                  {t.board.kicker}
                 </p>
                 <h3 className="mt-1 text-xl font-black sm:text-2xl">
-                  Growth map
+                  {t.board.title}
                 </h3>
               </div>
 
@@ -1069,11 +793,11 @@ export default function Home() {
               <div className="pin pin-lime bottom-[16%] left-[18%]" />
               <div className="pin pin-dark bottom-[18%] right-[15%]" />
 
-              {boardNotes.map((note) => (
-                <div key={note.title} className={`note-card ${note.className}`}>
+              {t.board.notes.map((note, i) => (
+                <div key={note.title} className={`note-card ${boardNoteVisuals[i].className}`}>
                   <span className="tape" />
                   <p
-                    className={`text-xs font-black uppercase tracking-[0.18em] ${note.tone}`}
+                    className={`text-xs font-black uppercase tracking-[0.18em] ${boardNoteVisuals[i].tone}`}
                   >
                     {note.step}
                   </p>
@@ -1086,7 +810,7 @@ export default function Home() {
                 </div>
               ))}
 
-              <div className="board-stamp">Approved for launch</div>
+              <div className="board-stamp">{t.board.stamp}</div>
             </div>
           </div>
         </div>
@@ -1110,37 +834,36 @@ export default function Home() {
 
               <p className="section-kicker">
                 <span className="kicker-dot" />
-                Main Services
+                {t.services.kicker}
               </p>
 
               <h2 className="max-w-3xl text-4xl font-black tracking-tight md:text-5xl lg:text-6xl">
-                A creative wall of{" "}
-                <span className="marker-highlight marker-purple">services</span>{" "}
-                designed to grow your brand from every{" "}
-                <span className="scribble-word">angle</span>.
+                {t.services.headingPre}{" "}
+                <span className="marker-highlight marker-purple">{t.services.headingServices}</span>{" "}
+                {t.services.headingMid}{" "}
+                <span className="scribble-word">{t.services.headingAngle}</span>.
               </h2>
 
               <p className="mt-5 max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-                We act as a complete growth partner, combining{" "}
-                <span className="marker-highlight marker-lime">strategy</span>,{" "}
-                <span className="marker-highlight marker-orange">creativity</span>,{" "}
-                marketing, production, PR, software, and business consulting
-                under one{" "}
+                {t.services.para}{" "}
+                <span className="marker-highlight marker-lime">{t.services.paraStrategy}</span>,{" "}
+                <span className="marker-highlight marker-orange">{t.services.paraCreativity}</span>,{" "}
+                {t.services.paraFramework}{" "}
                 <span className="scribble-underline">
-                  organized service framework
+                  {t.services.frameworkPhrase}
                 </span>
                 .
               </p>
 
               <div className="intro-chip-row">
-                <span className="intro-chip">Online + Offline Growth</span>
-                <span className="intro-chip">Creative + Strategy</span>
-                <span className="intro-chip">Execution + Technology</span>
+                {t.services.chips.map((chip) => (
+                  <span key={chip} className="intro-chip">{chip}</span>
+                ))}
               </div>
 
               <div className="quote-strip">
-                <span className="quote-strip-tag">Pinned note</span>
-                <p>One partner. Multiple growth systems. Clear execution.</p>
+                <span className="quote-strip-tag">{t.services.pinnedTag}</span>
+                <p>{t.services.pinnedText}</p>
               </div>
             </div>
 
@@ -1151,23 +874,24 @@ export default function Home() {
 
               <div className="mini-note mini-note-one">
                 <span className="tape" />
-                <p className="mini-note-label">Focus</p>
+                <p className="mini-note-label">{t.services.miniFocusLabel}</p>
                 <h4>
                   <span className="marker-highlight marker-purple">
-                    Main growth
+                    {t.services.miniFocusMainGrowth}
                   </span>{" "}
-                  services
+                  {t.services.miniFocusServices}
                 </h4>
-                <p>Strategy, creativity, campaigns, and digital buildouts.</p>
+                <p>{t.services.miniFocusText}</p>
               </div>
 
               <div className="mini-note mini-note-two">
                 <span className="tape" />
-                <p className="mini-note-label">Approach</p>
+                <p className="mini-note-label">{t.services.miniApproachLabel}</p>
                 <h4>
-                  <span className="scribble-word">Organized</span> execution
+                  <span className="scribble-word">{t.services.miniApproachOrganized}</span>{" "}
+                  {t.services.miniApproachExec}
                 </h4>
-                <p>Everything is connected under one clean workflow.</p>
+                <p>{t.services.miniApproachText}</p>
               </div>
             </div>
           </div>
@@ -1176,10 +900,10 @@ export default function Home() {
             <div className="service-thread thread-one" />
             <div className="service-thread thread-two" />
 
-            {featuredServices.map((service) => (
+            {t.services.cards.map((service, i) => (
               <article
                 key={service.title}
-                className={`service-feature-card ${service.noteClass} ${service.tone}`}
+                className={`service-feature-card ${serviceVisuals[i].noteClass} ${serviceVisuals[i].tone}`}
               >
                 <span className="tape" />
                 <span className="service-pin" />
@@ -1191,7 +915,7 @@ export default function Home() {
                 </div>
 
                 <div className="service-badge-row">
-                  <p className="service-number">{service.number}</p>
+                  <p className="service-number">{serviceVisuals[i].number}</p>
                   <span className="service-chip">{service.subtitle}</span>
                 </div>
 
@@ -1200,7 +924,7 @@ export default function Home() {
                 </div>
 
                 <div className="service-icon-mark" aria-hidden="true">
-                  {service.icon}
+                  {serviceVisuals[i].icon}
                 </div>
 
                 <h3 className="mt-4 text-2xl font-black leading-tight sm:text-[1.75rem]">
@@ -1225,7 +949,7 @@ export default function Home() {
                 </div>
 
                 <div className="service-footer-strip">
-                  <span>Focus</span>
+                  <span>{t.services.miniFocusLabel}</span>
                   <strong>{service.metric}</strong>
                 </div>
               </article>
@@ -1236,21 +960,21 @@ export default function Home() {
             <div className="mb-8">
               <p className="section-kicker text-stone-500">
                 <span className="kicker-dot stone" />
-                Supporting Services
+                {t.services.supportingKicker}
               </p>
 
               <h3 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
-                Extra capabilities that{" "}
-                <span className="marker-highlight marker-lime">complete</span>{" "}
-                the growth picture.
+                {t.services.supportingHeadingPre}{" "}
+                <span className="marker-highlight marker-lime">{t.services.supportingComplete}</span>{" "}
+                {t.services.supportingHeadingPost}
               </h3>
             </div>
 
             <div className="grid gap-5 md:grid-cols-3">
-              {supportingServices.map((service, index) => (
+              {t.services.supporting.map((service, index) => (
                 <article
                   key={service.title}
-                  className={`supporting-service-card ${service.color} ${
+                  className={`supporting-service-card ${supportingVisuals[index].color} ${
                     index % 2 === 0 ? "service-note-left" : "service-note-right"
                   }`}
                 >
@@ -1259,7 +983,7 @@ export default function Home() {
 
                   <div className="supporting-topline">
                     <p className="text-sm font-black text-stone-500">
-                      {service.number}
+                      {supportingVisuals[index].number}
                     </p>
                     <span className="supporting-mini-label">
                       {service.label}
@@ -1284,10 +1008,10 @@ export default function Home() {
                 <div className="board-toolbar">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.22em] text-stone-500 sm:text-xs">
-                      Service Strategy Board
+                      {t.services.boardKicker}
                     </p>
                     <h3 className="mt-1 text-xl font-black sm:text-2xl">
-                      Executive & client service map
+                      {t.services.boardTitle}
                     </h3>
                   </div>
 
@@ -1310,15 +1034,15 @@ export default function Home() {
                   <div className="pin pin-lime scope-pin-three" />
                   <div className="pin pin-dark scope-pin-four" />
 
-                  {scopeRows.map((row, index) => (
+                  {t.services.scopeRows.map((row, index) => (
                     <article
                       key={row.category}
-                      className={`scope-map-note scope-map-note-${index + 1} scope-${row.accent}`}
+                      className={`scope-map-note scope-map-note-${index + 1} scope-${scopeRowVisuals[index].accent}`}
                     >
                       <span className="tape" />
 
                       <div className="scope-map-topline">
-                        <span className="scope-map-number">{row.number}</span>
+                        <span className="scope-map-number">{scopeRowVisuals[index].number}</span>
                         <span className="scope-map-tag">{row.tag}</span>
                       </div>
 
@@ -1335,7 +1059,7 @@ export default function Home() {
                   ))}
 
                   <div className="board-stamp scope-board-stamp">
-                    Mapped for growth
+                    {t.services.boardStamp}
                   </div>
                 </div>
               </div>
@@ -1347,26 +1071,21 @@ export default function Home() {
                 <span className="position-pin" />
 
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
-                  Positioning Statement
+                  {t.services.posTag}
                 </p>
 
                 <h4 className="mt-3 text-2xl font-black leading-tight md:text-3xl">
-                  We are a{" "}
+                  {t.services.posHeadingPre}{" "}
                   <span className="marker-highlight marker-orange">
-                    complete growth partner
+                    {t.services.posPartner}
                   </span>
                   .
                 </h4>
 
-                <p className="positioning-main-text">
-                  We combine online and offline marketing, creative production,
-                  PR, software, and business strategy under one organized
-                  service framework — helping brands move faster, look better,
-                  and grow more professionally.
-                </p>
+                <p className="positioning-main-text">{t.services.posText}</p>
 
                 <div className="mt-5 grid gap-3">
-                  {positioningItems.map((item) => (
+                  {t.services.posItems.map((item) => (
                     <div key={item} className="position-line-item">
                       <span className="position-dot" />
                       <span>{item}</span>
@@ -1376,27 +1095,19 @@ export default function Home() {
 
                 <div className="position-footer-note">
                   <span className="micro-note-dot" />
-                  <p>
-                    Built to help brands look better, sell better, and scale
-                    better.
-                  </p>
+                  <p>{t.services.posFooter}</p>
                 </div>
               </div>
 
               <div className="scope-proof-card">
-                <span className="proof-stamp">Why it works</span>
-                <h4>One organized partner instead of scattered suppliers.</h4>
-                <p>
-                  The framework connects strategy, visuals, media, PR, outdoor,
-                  business consulting, and software so every service supports
-                  the same growth direction.
-                </p>
+                <span className="proof-stamp">{t.services.proofStamp}</span>
+                <h4>{t.services.proofHeading}</h4>
+                <p>{t.services.proofText}</p>
               </div>
             </aside>
           </div>
         </div>
       </section>
-
 
       {/* Our Work */}
       <section
@@ -1412,38 +1123,38 @@ export default function Home() {
               <div>
                 <p className="section-kicker">
                   <span className="kicker-dot" />
-                  Our Work
+                  {t.work.kicker}
                 </p>
 
                 <h2 className="max-w-4xl text-4xl font-black leading-[0.96] tracking-tight md:text-6xl lg:text-7xl">
-                  Things we made look better, sound smarter, and{" "}
+                  {t.work.headingPre}{" "}
                   <span className="marker-highlight marker-lime">
-                    work harder
+                    {t.work.headingHarder}
                   </span>
                   .
                 </h2>
 
                 <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-                  Not just pretty designs. This is the proof wall: brand
-                  systems, campaigns, websites, content, outdoor ideas, and
-                  strategy work shown as mini case studies with mockup previews.
+                  {t.work.para}
                 </p>
               </div>
 
               <aside className="work-sticky-note">
                 <span className="work-note-pin" />
-                <small>Pinned truth</small>
-                <strong>Every project starts messy.</strong>
-                <p>Then we turn it into something people can understand, trust, and contact.</p>
+                <small>{t.work.notePinned}</small>
+                <strong>{t.work.noteStrong}</strong>
+                <p>{t.work.noteText}</p>
               </aside>
             </div>
 
             <div className="work-filter-row" aria-label="Our work categories">
-              {workFilters.map((filter, index) => (
+              {t.work.filters.map((filter, index) => (
                 <button
                   key={filter}
                   type="button"
-                  className={`work-filter-pill ${index === 0 ? "is-active" : ""}`}
+                  onClick={() => setActiveFilterIndex(index)}
+                  aria-pressed={activeFilterIndex === index}
+                  className={`work-filter-pill ${activeFilterIndex === index ? "is-active" : ""}`}
                 >
                   {filter}
                 </button>
@@ -1457,78 +1168,70 @@ export default function Home() {
                 className="work-download-btn"
               >
                 <span aria-hidden="true">↓</span>
-                Download Portfolio PDF
+                {t.work.download}
               </a>
-              <small>Full company portfolio, ready for offline sharing.</small>
+              <small>{t.work.downloadHint}</small>
             </div>
           </div>
 
           <div className="work-featured-layout">
             <article className="work-featured-card">
               <div className="work-featured-copy">
-                <span className="work-featured-label">{featuredWork.label}</span>
-                <h3>{featuredWork.headline}</h3>
-                <p>{featuredWork.story}</p>
+                <span className="work-featured-label">{t.work.featuredLabel}</span>
+                <h3>{t.work.featuredHeadline}</h3>
+                <p>{t.work.featuredStory}</p>
 
                 <div className="work-chip-row">
-                  {featuredWork.services.map((service) => (
+                  {t.work.featuredServices.map((service) => (
                     <span key={service}>{service}</span>
                   ))}
                 </div>
 
                 <div className="work-result-box">
-                  <span>Result</span>
-                  <strong>{featuredWork.result}</strong>
+                  <span>{t.work.featuredResultLabel}</span>
+                  <strong>{t.work.featuredResult}</strong>
                 </div>
               </div>
 
               <div className="work-featured-visual">
                 <img
-                  src={featuredWork.image}
-                  alt={`${featuredWork.title} portfolio preview`}
+                  src={featuredWorkVisual.image}
+                  alt="Anovic featured work preview"
                   width={448}
                   height={336}
                   loading="lazy"
                   decoding="async"
                   onError={(event) => {
                     event.currentTarget.onerror = null;
-                    event.currentTarget.src = featuredWork.fallbackImage;
+                    event.currentTarget.src = featuredFallback;
                   }}
                 />
                 <div className="work-floating-ticket">
-                  <span>Featured</span>
-                  <strong>{featuredWork.category}</strong>
+                  <span>{t.work.featuredTicket}</span>
+                  <strong>{t.work.featuredCategory}</strong>
                 </div>
               </div>
             </article>
 
             <aside className="work-process-card">
               <span className="tape" />
-              <p className="work-process-kicker">How to show the work</p>
-              <h3>Each card tells the mini story, not just the screenshot.</h3>
+              <p className="work-process-kicker">{t.work.processKicker}</p>
+              <h3>{t.work.processHeading}</h3>
 
               <div className="work-process-list">
-                <div>
-                  <span>01</span>
-                  <strong>Problem</strong>
-                  <p>What looked weak, unclear, random, or unfinished.</p>
-                </div>
-                <div>
-                  <span>02</span>
-                  <strong>Creation</strong>
-                  <p>The identity, campaign, website, content, or strategy built.</p>
-                </div>
-                <div>
-                  <span>03</span>
-                  <strong>Outcome</strong>
-                  <p>The practical upgrade: clarity, trust, attention, or conversion.</p>
-                </div>
+                {t.work.process.map((step) => (
+                  <div key={step.step}>
+                    <span>{step.step}</span>
+                    <strong>{step.title}</strong>
+                    <p>{step.text}</p>
+                  </div>
+                ))}
               </div>
             </aside>
           </div>
 
           <div className="work-grid">
-            {workProjects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <article
                 key={project.title}
                 className={`work-project-card work-project-${project.tone}`}
@@ -1569,11 +1272,11 @@ export default function Home() {
 
                   <div className="work-before-after-mini">
                     <div>
-                      <span>Before</span>
+                      <span>{t.work.beforeLabel}</span>
                       <strong>{project.before}</strong>
                     </div>
                     <div>
-                      <span>After</span>
+                      <span>{t.work.afterLabel}</span>
                       <strong>{project.after}</strong>
                     </div>
                   </div>
@@ -1583,33 +1286,27 @@ export default function Home() {
           </div>
 
           <div className="work-before-after-strip">
-            <div>
-              <span>Before Anovic</span>
-              <strong>Good business, unclear image.</strong>
-            </div>
-            <div>
-              <span>What we do</span>
-              <strong>Brand, content, campaigns, websites, and strategy.</strong>
-            </div>
-            <div>
-              <span>After Anovic</span>
-              <strong>Sharper presence people can trust and remember.</strong>
-            </div>
+            {t.work.strip.map((item) => (
+              <div key={item.k}>
+                <span>{item.k}</span>
+                <strong>{item.v}</strong>
+              </div>
+            ))}
           </div>
 
           <div className="work-cta-card">
             <div>
-              <span>Ready to join the wall?</span>
-              <h3>Turn your brand from “we’ll fix it later” into “people actually notice us”.</h3>
+              <span>{t.work.ctaSpan}</span>
+              <h3>{t.work.ctaHeading}</h3>
             </div>
             <div className="work-cta-actions">
-              <a href="#contact-us">Start a Project</a>
+              <a href="#contact-us">{t.work.ctaStart}</a>
               <a
                 href={PORTFOLIO_PDF_FILE}
                 download="Anovic-Portfolio.pdf"
                 className="work-cta-download"
               >
-                Download PDF
+                {t.work.ctaDownload}
               </a>
             </div>
           </div>
@@ -1631,25 +1328,22 @@ export default function Home() {
               <div>
                 <p className="section-kicker">
                   <span className="kicker-dot" />
-                  About Us
+                  {t.about.kicker}
                 </p>
 
                 <h2 className="max-w-4xl text-4xl font-black leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
-                  We make brands look good, sound smart, and{" "}
+                  {t.about.headingPre}{" "}
                   <span className="marker-highlight marker-lime">
-                    grow faster
+                    {t.about.headingGrow}
                   </span>
                   .
                 </h2>
               </div>
 
               <div className="about-stamp-card">
-                <span className="about-stamp-label">Creative Engine</span>
-                <strong>Strategy + Design + Growth</strong>
-                <p>
-                  For brands that have the idea, but need the world to actually
-                  notice it.
-                </p>
+                <span className="about-stamp-label">{t.about.stampLabel}</span>
+                <strong>{t.about.stampStrong}</strong>
+                <p>{t.about.stampText}</p>
               </div>
             </div>
           </div>
@@ -1659,40 +1353,28 @@ export default function Home() {
               <span className="tape" />
               <span className="about-pin" />
 
-              <div className="about-story-kicker">The simple version</div>
+              <div className="about-story-kicker">{t.about.storyKicker}</div>
 
               <p className="about-lead-text">
-                We are a creative marketing and business solutions company
-                helping brands move from{" "}
+                {t.about.leadPre}{" "}
                 <span className="marker-highlight marker-purple">
-                  “we have an idea”
+                  {t.about.leadIdea}
                 </span>{" "}
-                to{" "}
+                {t.about.leadMid}{" "}
                 <span className="marker-highlight marker-orange">
-                  “people actually know us.”
+                  {t.about.leadKnow}
                 </span>
               </p>
 
               <div className="about-divider" />
 
-              <p>
-                We mix strategy, design, digital marketing, media production,
-                PR, outdoor advertising, consulting, and technology to create
-                work that looks beautiful, feels clear, and gets real results.
-              </p>
+              <p>{t.about.p1}</p>
 
-              <p>
-                Think of us as your brand’s creative engine — we polish the
-                image, sharpen the message, build the campaigns, and make sure
-                your business shows up like it knows exactly what it’s doing.
-              </p>
+              <p>{t.about.p2}</p>
 
               <div className="about-quote-note">
-                <span>Not just pretty pixels.</span>
-                <p>
-                  Good marketing should make people stop, trust, click, call,
-                  buy, and remember you.
-                </p>
+                <span>{t.about.quoteSpan}</span>
+                <p>{t.about.quoteText}</p>
               </div>
             </article>
 
@@ -1703,45 +1385,29 @@ export default function Home() {
 
               <div className="about-mini-note about-mini-note-one">
                 <span className="tape" />
-                <small>Before</small>
-                <strong>“Just another company”</strong>
-                <p>Good offer, unclear image, quiet market presence.</p>
+                <small>{t.about.beforeSmall}</small>
+                <strong>{t.about.beforeStrong}</strong>
+                <p>{t.about.beforeText}</p>
               </div>
 
               <div className="about-mini-note about-mini-note-two">
                 <span className="tape" />
-                <small>After</small>
-                <strong>“The company people notice”</strong>
-                <p>Sharper identity, clearer message, stronger campaigns.</p>
+                <small>{t.about.afterSmall}</small>
+                <strong>{t.about.afterStrong}</strong>
+                <p>{t.about.afterText}</p>
               </div>
 
               <div className="about-center-badge">
-                <span>Brand Glow-Up</span>
+                <span>{t.about.badge}</span>
               </div>
             </aside>
           </div>
 
           <div className="about-metrics-grid">
-            {[
-              {
-                label: "Look Good",
-                text: "Visual identity, content, production, and brand polish.",
-                tone: "purple",
-              },
-              {
-                label: "Sound Smart",
-                text: "Clear positioning, messaging, offers, and campaign ideas.",
-                tone: "lime",
-              },
-              {
-                label: "Grow Faster",
-                text: "Digital marketing, PR, outdoor reach, consulting, and tech.",
-                tone: "orange",
-              },
-            ].map((item) => (
-              <div key={item.label} className={`about-metric-card ${item.tone}`}>
+            {t.about.metrics.map((item, i) => (
+              <div key={item.title} className={`about-metric-card ${["purple", "lime", "orange"][i]}`}>
                 <span className="about-metric-dot" />
-                <h3>{item.label}</h3>
+                <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </div>
             ))}
@@ -1765,27 +1431,26 @@ export default function Home() {
               <div>
                 <p className="section-kicker">
                   <span className="kicker-dot" />
-                  Why Choose Us
+                  {t.why.kicker}
                 </p>
 
                 <h2 className="max-w-4xl text-4xl font-black leading-[0.96] tracking-tight md:text-6xl lg:text-7xl">
-                  Marketing should not feel like{" "}
+                  {t.why.headingPre}{" "}
                   <span className="marker-highlight marker-orange">
-                    gambling with your budget
+                    {t.why.headingGamble}
                   </span>
                   .
                 </h2>
 
                 <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-                  We keep it clear, creative, and risk-free — with smart plans,
-                  honest pricing, and work built to help both sides win.
+                  {t.why.para}
                 </p>
               </div>
 
               <div className="why-big-note">
-                <span className="why-note-label">The Deal</span>
-                <strong>You grow, we grow.</strong>
-                <p>That’s the win-win situation. Very business. Very wholesome.</p>
+                <span className="why-note-label">{t.why.noteLabel}</span>
+                <strong>{t.why.noteStrong}</strong>
+                <p>{t.why.noteText}</p>
               </div>
             </div>
           </div>
@@ -1799,17 +1464,17 @@ export default function Home() {
             <div className="why-board-pin why-board-pin-three" />
 
             <div className="why-cards-grid">
-              {whyChooseCards.map((card, index) => (
+              {t.why.cards.map((card, index) => (
                 <article
                   key={card.title}
-                  className={`why-card why-card-${card.tone} ${
+                  className={`why-card why-card-${whyCardVisuals[index].tone} ${
                     index % 2 === 0 ? "why-tilt-left" : "why-tilt-right"
                   }`}
                 >
                   <span className="tape" />
 
                   <div className="why-card-top">
-                    <span className="why-card-icon">{card.icon}</span>
+                    <span className="why-card-icon" aria-hidden="true">{whyCardVisuals[index].icon}</span>
                     <span className="why-card-tag">{card.tag}</span>
                   </div>
 
@@ -1817,8 +1482,8 @@ export default function Home() {
                   <p>{card.text}</p>
 
                   <div className="why-card-footer">
-                    <span>No drama</span>
-                    <strong>Approved</strong>
+                    <span>{t.why.cardNoDrama}</span>
+                    <strong>{t.why.cardApproved}</strong>
                   </div>
                 </article>
               ))}
@@ -1826,11 +1491,9 @@ export default function Home() {
           </div>
 
           <div className="why-bottom-strip">
-            <span>Risk-free start</span>
-            <span>Honest pricing</span>
-            <span>Creative execution</span>
-            <span>Clear reports</span>
-            <span>Win-win growth</span>
+            {t.why.strip.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -1847,51 +1510,38 @@ export default function Home() {
               <div className="contact-hero-card-v2">
                 <div className="contact-eyebrow-v2">
                   <span>✦</span>
-                  Contact Us
+                  {t.contact.eyebrow}
                 </div>
 
-                <h2>
-                  Ready to make your brand look sharper, sound smarter, and grow faster?
-                </h2>
+                <h2>{t.contact.heading}</h2>
 
-                <p>
-                  Send us a message and let’s talk about your next move. Tell us the goal,
-                  the problem, and the budget range — we’ll help you choose the cleanest path.
-                </p>
+                <p>{t.contact.para}</p>
 
                 <div className="contact-trust-row-v2">
-                  <div>
-                    <span>01</span>
-                    <strong>Fast reply</strong>
-                    <p>We respond with practical next steps.</p>
-                  </div>
-                  <div>
-                    <span>02</span>
-                    <strong>Clear direction</strong>
-                    <p>No vague packages or budget guessing.</p>
-                  </div>
-                  <div>
-                    <span>03</span>
-                    <strong>Better fit</strong>
-                    <p>We recommend what actually makes sense.</p>
-                  </div>
+                  {t.contact.trust.map((item) => (
+                    <div key={item.step}>
+                      <span>{item.step}</span>
+                      <strong>{item.title}</strong>
+                      <p>{item.text}</p>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="contact-action-row-v2">
-                  <a href="tel:01148000500" className="contact-main-action-v2">
+                  <a href="tel:+201148000500" className="contact-main-action-v2">
                     <span>☎</span>
-                    Call 01148000500
+                    {t.contact.callAction}
                   </a>
-                  <a href="mailto:business@anovic.com" className="contact-secondary-action-v2">
+                  <a href="mailto:business@anovic.net" className="contact-secondary-action-v2">
                     <span>✉</span>
-                    business@anovic.com
+                    business@anovic.net
                   </a>
                 </div>
 
                 <div className="contact-social-panel-v2" aria-label="Social media links">
-                  <span>Follow Anovic</span>
+                  <span>{t.contact.follow}</span>
                   <div className="social-icon-list social-icon-list-dark">
-                    {socialLinks.map((social) => (
+                    {activeSocials.map((social) => (
                       <a
                         key={social.label}
                         href={social.href}
@@ -1915,29 +1565,26 @@ export default function Home() {
                 <article className="contact-info-card-v2">
                   <span className="contact-info-icon-v2">☎</span>
                   <div>
-                    <span>Phone</span>
-                    <a href="tel:01148000500">01148000500</a>
-                    <a href="tel:01277140013">01277140013</a>
-                    <a href="tel:01285848332">01285848332</a>
+                    <span>{t.contact.phoneLabel}</span>
+                    <a href="tel:+201148000500">01148000500</a>
+                    <a href="tel:+201277140013">01277140013</a>
+                    <a href="tel:+201285848332">01285848332</a>
                   </div>
                 </article>
 
                 <article className="contact-info-card-v2">
                   <span className="contact-info-icon-v2">✉</span>
                   <div>
-                    <span>Email</span>
-                    <a href="mailto:business@anovic.com">business@anovic.com</a>
+                    <span>{t.contact.emailLabel}</span>
+                    <a href="mailto:business@anovic.net">business@anovic.net</a>
                   </div>
                 </article>
 
                 <article className="contact-info-card-v2 contact-info-card-wide-v2">
                   <span className="contact-info-icon-v2">⌖</span>
                   <div>
-                    <span>Address</span>
-                    <p>
-                      Salah Salem St., El Obour Buildings, Building No. 1, 4th Floor,
-                      Office 46
-                    </p>
+                    <span>{t.contact.addressLabel}</span>
+                    <p>{t.contact.address}</p>
                   </div>
                 </article>
               </div>
@@ -1947,57 +1594,70 @@ export default function Home() {
               className="contact-form-card-v2"
               onSubmit={handleContactSubmit}
             >
+              {/* Honeypot: hidden from people, catches bots. FormSubmit drops the field. */}
+              <input
+                type="text"
+                name="_honey"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  width: 1,
+                  height: 1,
+                  opacity: 0,
+                }}
+              />
+
               <div className="contact-form-head-v2">
                 <div>
-                  <span>Project Brief</span>
-                  <h3>Tell us what you need.</h3>
+                  <span>{t.contact.formTag}</span>
+                  <h3>{t.contact.formHeading}</h3>
                 </div>
-                <p>
-                  Short, clear, and useful. The more context you add, the sharper our first
-                  recommendation will be.
-                </p>
+                <p>{t.contact.formHint}</p>
               </div>
 
               <div className="contact-field-grid-v2">
                 <label className="contact-field-v2">
-                  <span>Full Name</span>
+                  <span>{t.contact.fullName}</span>
                   <input
                     name="fullName"
                     type="text"
-                    placeholder="Your name"
+                    placeholder={t.contact.fullNamePh}
                     autoComplete="name"
                     required
                   />
                 </label>
 
                 <label className="contact-field-v2">
-                  <span>Phone Number</span>
+                  <span>{t.contact.phone}</span>
                   <input
                     name="phone"
                     type="tel"
-                    placeholder="Your phone"
+                    placeholder={t.contact.phonePh}
                     autoComplete="tel"
                     required
                   />
                 </label>
 
                 <label className="contact-field-v2">
-                  <span>Email Address</span>
+                  <span>{t.contact.emailField}</span>
                   <input
                     name="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder={t.contact.emailPh}
                     autoComplete="email"
                     required
                   />
                 </label>
 
                 <label className="contact-field-v2">
-                  <span>Company / Brand Name</span>
+                  <span>{t.contact.company}</span>
                   <input
                     name="company"
                     type="text"
-                    placeholder="Brand or company"
+                    placeholder={t.contact.companyPh}
                     autoComplete="organization"
                   />
                 </label>
@@ -2005,12 +1665,12 @@ export default function Home() {
 
               <div className="contact-service-panel-v2">
                 <div className="contact-service-head-v2">
-                  <span>Service Needed</span>
-                  <small>Choose one or more</small>
+                  <span>{t.contact.serviceNeeded}</span>
+                  <small>{t.contact.chooseOne}</small>
                 </div>
 
                 <div className="contact-service-list-v2">
-                  {contactServices.map((service) => (
+                  {t.contact.services.map((service) => (
                     <label key={service}>
                       <input name="services" type="checkbox" value={service} />
                       <span>{service}</span>
@@ -2020,12 +1680,12 @@ export default function Home() {
               </div>
 
               <label className="contact-field-v2 contact-field-full-v2">
-                <span>Budget Range</span>
+                <span>{t.contact.budget}</span>
                 <select className="list" name="budget" defaultValue="">
                   <option value="" disabled>
-                    Select budget range
+                    {t.contact.budgetPlaceholder}
                   </option>
-                  {budgetRanges.map((range) => (
+                  {t.contact.budgets.map((range) => (
                     <option key={range} value={range}>
                       {range}
                     </option>
@@ -2034,11 +1694,11 @@ export default function Home() {
               </label>
 
               <label className="contact-field-v2 contact-field-full-v2">
-                <span>Message</span>
+                <span>{t.contact.message}</span>
                 <textarea
                   name="message"
                   rows={5}
-                  placeholder="Example: We need social media management, reels, ads, and a cleaner brand look. Our target is..."
+                  placeholder={t.contact.messagePh}
                   required
                 />
               </label>
@@ -2048,7 +1708,7 @@ export default function Home() {
                 className="contact-submit-btn-v2"
                 disabled={contactStatus === "sending"}
               >
-                <span>{contactStatus === "sending" ? "Sending..." : "Send Message"}</span>
+                <span>{contactStatus === "sending" ? t.contact.sending : t.contact.send}</span>
                 <strong>→</strong>
               </button>
 
@@ -2064,10 +1724,10 @@ export default function Home() {
                   role="status"
                 >
                   {contactStatus === "success"
-                    ? "Your message was sent successfully. We will contact you soon."
+                    ? t.contact.success
                     : contactStatus === "sending"
-                      ? "Sending your message..."
-                      : "Something went wrong. Please try again or email business@anovic.com directly."}
+                      ? t.contact.sendingMsg
+                      : t.contact.error}
                 </p>
               )}
             </form>
@@ -2080,28 +1740,25 @@ export default function Home() {
         <div className="footer-shell-v2 mx-auto max-w-7xl px-4 py-12 sm:px-5 md:px-8">
           <div className="footer-top-v2">
             <div className="footer-brand-v2">
-              <a href="#home" aria-label="Anovic home">
+              <a href="#home" aria-label={t.a11y.home}>
                 <img src="/logo white.png" alt="Anovic logo" loading="lazy" decoding="async" />
               </a>
-              <p>
-                Integrated marketing, creative production, PR, business consulting, and
-                software solutions for brands that want sharper presence and clearer growth.
-              </p>
+              <p>{t.footer.brandText}</p>
             </div>
 
             <div className="footer-links-v2">
               <div>
-                <h3>Company</h3>
-                {navLinks.map((link) => (
-                  <a key={link.label} href={link.href}>
+                <h3>{t.footer.company}</h3>
+                {navItems.map((link) => (
+                  <a key={link.href} href={link.href}>
                     {link.label}
                   </a>
                 ))}
               </div>
 
               <div>
-                <h3>Services</h3>
-                {contactServices.slice(0, 5).map((service) => (
+                <h3>{t.footer.servicesTitle}</h3>
+                {t.contact.services.slice(0, 5).map((service) => (
                   <a key={service} href="#services">
                     {service}
                   </a>
@@ -2109,21 +1766,34 @@ export default function Home() {
               </div>
 
               <div>
-                <h3>Contact</h3>
-                <a href="tel:01148000500">01148000500</a>
-                <a href="tel:01277140013">01277140013</a>
-                <a href="tel:01285848332">01285848332</a>
-                <a href="mailto:business@anovic.com">business@anovic.com</a>
+                <h3>{t.footer.contactTitle}</h3>
+                <a href="tel:+201148000500">01148000500</a>
+                <a href="tel:+201277140013">01277140013</a>
+                <a href="tel:+201285848332">01285848332</a>
+                <a href="mailto:business@anovic.net">business@anovic.net</a>
               </div>
             </div>
           </div>
 
           <div className="footer-bottom-v2">
-            <p>© {new Date().getFullYear()} Anovic. All rights reserved.</p>
-            <p>Salah Salem St., El Obour Buildings, Building No. 1, 4th Floor, Office 46</p>
+            <p>© {new Date().getFullYear()} Anovic. {t.footer.rights}</p>
+            <p>{t.contact.address}</p>
           </div>
         </div>
       </footer>
+
+      <AnovicChat />
+
+      <div ref={progressRef} className="scroll-progress" aria-hidden="true" />
+
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`scroll-top-btn ${showTop && !open ? "is-visible" : ""}`}
+        aria-label={t.a11y.backToTop}
+      >
+        <span aria-hidden="true">↑</span>
+      </button>
     </main>
   );
 }

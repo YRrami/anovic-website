@@ -77,3 +77,99 @@ body {
     animation: none;
   }
 }
+
+/* =========================================================
+   SCROLL PROGRESS BAR (site-wide)
+   Thin brand-gradient indicator driven by scroll position.
+   ========================================================= */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, #a855f7, #bef264 55%, #fb923c);
+  box-shadow: 0 1px 6px rgba(168, 85, 247, 0.4);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* =========================================================
+   FLOATING BACK-TO-TOP BUTTON
+   Matches the paper / studio theme (cream glass, lime accent ring).
+   ========================================================= */
+.scroll-top-btn {
+  position: fixed;
+  right: clamp(14px, 3vw, 28px);
+  bottom: clamp(14px, 3vw, 28px);
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  border: 2px solid rgba(28, 25, 23, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: #1c1917;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(28, 25, 23, 0.18);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(14px) scale(0.9);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    background 0.2s ease;
+}
+
+.scroll-top-btn::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 9999px;
+  border: 2px solid rgba(190, 242, 100, 0.7);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:hover {
+  background: #ecfccb;
+  transform: translateY(-2px) scale(1.05);
+}
+
+.scroll-top-btn:hover::after {
+  opacity: 1;
+}
+
+.scroll-top-btn:focus-visible {
+  outline: 3px solid rgba(168, 85, 247, 0.6);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-btn {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+
+  .scroll-top-btn.is-visible {
+    transform: none;
+  }
+
+  .scroll-top-btn:hover {
+    transform: none;
+  }
+}

@@ -769,7 +769,7 @@ section[id] {
 
 /* Hero */
 .hero-copy {
-  animation: riseIn 650ms ease both;
+  position: relative;
 }
 
 .hero-board {
@@ -1009,6 +1009,231 @@ section[id] {
   bottom: 70px;
   background: #ecfccb;
   animation-delay: -1.7s;
+}
+
+/* =========================================================
+   HERO ENHANCEMENTS
+   Staggered copy entrance, self-drawing marker highlight,
+   floating accent, badge/chip micro-interactions, scroll cue.
+   All motion is disabled under prefers-reduced-motion below.
+   ========================================================= */
+
+/* Soft floating accent behind the hero copy */
+.hero-copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -46px;
+  left: -64px;
+  width: clamp(220px, 26vw, 320px);
+  height: clamp(220px, 26vw, 320px);
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.2), transparent 70%);
+  pointer-events: none;
+  filter: blur(6px);
+  animation: heroOrbFloat 13s ease-in-out infinite;
+}
+
+/* Staggered entrance for each block of hero copy */
+.hero-copy > * {
+  animation: heroStagger 640ms cubic-bezier(0.22, 0.72, 0.2, 1) both;
+}
+
+.hero-copy > *:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.hero-copy > *:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.hero-copy > *:nth-child(3) {
+  animation-delay: 0.22s;
+}
+.hero-copy > *:nth-child(4) {
+  animation-delay: 0.32s;
+}
+.hero-copy > *:nth-child(5) {
+  animation-delay: 0.42s;
+}
+.hero-copy > *:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+/* Marker highlight draws itself in under the headline */
+.hero-marker {
+  transform: rotate(-1deg) scaleX(0);
+  transform-origin: left center;
+  animation: markerDraw 620ms cubic-bezier(0.6, 0, 0.2, 1) 0.5s both;
+}
+
+/* Status badge */
+.hero-badge {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.hero-badge:hover {
+  transform: translateY(-2px) rotate(-1deg);
+  box-shadow: 0 14px 26px rgba(80, 52, 25, 0.16);
+}
+
+.hero-badge-dot {
+  animation: dotPulse 2.6s ease-in-out infinite;
+}
+
+/* Capability chips */
+.hero-chip {
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.hero-chip:hover {
+  transform: translateY(-3px) rotate(-1.5deg);
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 24px rgba(80, 52, 25, 0.14);
+}
+
+/* Scroll-down cue */
+.hero-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  z-index: 12;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  color: #57534e;
+  transform: translateX(-50%);
+  animation: heroCueIn 600ms ease 0.7s both;
+}
+
+.hero-scroll-label {
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.hero-scroll-mouse {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(28, 25, 23, 0.2);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition:
+    border-color 200ms ease,
+    transform 200ms ease;
+}
+
+.hero-scroll-arrow {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #1c1917;
+  animation: cueBounce 1.7s ease-in-out infinite;
+}
+
+.hero-scroll-cue:hover {
+  color: #1c1917;
+}
+
+.hero-scroll-cue:hover .hero-scroll-mouse {
+  border-color: rgba(168, 85, 247, 0.5);
+  transform: translateY(-2px);
+}
+
+.hero-scroll-cue:focus-visible {
+  outline: 3px solid rgba(168, 85, 247, 0.55);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+@keyframes heroStagger {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes markerDraw {
+  from {
+    transform: rotate(-1deg) scaleX(0);
+  }
+  to {
+    transform: rotate(-1deg) scaleX(1);
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.82;
+  }
+}
+
+@keyframes cueBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+@keyframes heroCueIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes heroOrbFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(18px, 16px) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > *,
+  .hero-marker,
+  .hero-badge-dot,
+  .hero-scroll-cue,
+  .hero-scroll-arrow,
+  .hero-copy::before {
+    animation: none !important;
+  }
+
+  .hero-marker {
+    transform: rotate(-1deg) scaleX(1);
+  }
 }
 
 /* Services */
