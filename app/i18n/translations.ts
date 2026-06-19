@@ -57,6 +57,8 @@ export type Dict = {
     leadSendingMsg: string;
     leadError: string;
     follow: string;
+    joinTeam: string;
+    joinTeamHint: string;
   };
   board: { hangLeft: string; hangRight: string; kicker: string; title: string; stamp: string; notes: [BoardNote, BoardNote, BoardNote, BoardNote] };
   services: {
@@ -209,6 +211,18 @@ export type Dict = {
     error: string;
   };
   footer: { brandText: string; company: string; servicesTitle: string; contactTitle: string; rights: string };
+  careers: {
+    kicker: string;
+    heading: string;
+    subtitle: string;
+    pickRole: string;
+    pickRoleHint: string;
+    openings: string;
+    apply: string;
+    backHome: string;
+    note: string;
+    roles: string[];
+  };
   a11y: { backToTop: string; openMenu: string; closeMenu: string; home: string };
   chat: {
     triggerLabel: string;
@@ -250,6 +264,8 @@ const en: Dict = {
     leadSendingMsg: "Sending your contact...",
     leadError: "Please enter a valid email or phone number, or try again.",
     follow: "Follow the work",
+    joinTeam: "Join Our Team",
+    joinTeamHint: "We’re hiring — apply in 2 minutes.",
   },
   board: {
     hangLeft: "New idea ✦",
@@ -506,6 +522,29 @@ const en: Dict = {
     contactTitle: "Contact",
     rights: "All rights reserved.",
   },
+  careers: {
+    kicker: "Careers",
+    heading: "Join the Anovic team.",
+    subtitle: "Pick the role that fits you and apply in a couple of minutes. We’re always looking for sharp, creative people who want to grow with us.",
+    pickRole: "Choose a position",
+    pickRoleHint: "Tap a role to open its application form.",
+    openings: "Open Positions",
+    apply: "Apply",
+    backHome: "Back to home",
+    note: "Don’t see your role? Email your CV to business@anovic.net and tell us what you do best.",
+    roles: [
+      "Content Creator",
+      "Account / Social Media Manager",
+      "Graphic Designer",
+      "Media Buyer",
+      "Sales",
+      "Business Developer",
+      "Operations",
+      "Moderator",
+      "Tech",
+      "Video Editor",
+    ],
+  },
   a11y: { backToTop: "Back to top", openMenu: "Open menu", closeMenu: "Close menu", home: "Anovic home" },
   chat: {
     triggerLabel: "Ask Noura",
@@ -567,6 +606,8 @@ const ar: Dict = {
     leadSendingMsg: "جارٍ إرسال بياناتك...",
     leadError: "يرجى إدخال بريد إلكتروني أو رقم هاتف صحيح، أو حاول مرة أخرى.",
     follow: "تابع أعمالنا",
+    joinTeam: "انضم إلى فريقنا",
+    joinTeamHint: "نحن نوظّف — قدّم في دقيقتين.",
   },
   board: {
     hangLeft: "فكرة جديدة ✦",
@@ -823,6 +864,29 @@ const ar: Dict = {
     contactTitle: "التواصل",
     rights: "جميع الحقوق محفوظة.",
   },
+  careers: {
+    kicker: "الوظائف",
+    heading: "انضم إلى فريق أنوفيك.",
+    subtitle: "اختر الدور الذي يناسبك وقدّم في دقيقتين. نبحث دائمًا عن أشخاص مبدعين وأذكياء يريدون النمو معنا.",
+    pickRole: "اختر وظيفة",
+    pickRoleHint: "اضغط على الوظيفة لفتح نموذج التقديم.",
+    openings: "الوظائف المتاحة",
+    apply: "قدّم الآن",
+    backHome: "العودة للرئيسية",
+    note: "لا ترى وظيفتك؟ أرسل سيرتك الذاتية إلى business@anovic.net وأخبرنا بما تبرع فيه.",
+    roles: [
+      "صانع محتوى",
+      "مدير حسابات / سوشيال ميديا",
+      "مصمم جرافيك",
+      "مطور إعلانات",
+      "مبيعات",
+      "مطوّر أعمال",
+      "العمليات",
+      "مشرف",
+      "تقنية",
+      "محرر فيديو",
+    ],
+  },
   a11y: { backToTop: "العودة للأعلى", openMenu: "افتح القائمة", closeMenu: "أغلق القائمة", home: "الصفحة الرئيسية لأنوفيك" },
   chat: {
     triggerLabel: "اسأل نورا",
@@ -884,6 +948,8 @@ const es: Dict = {
     leadSendingMsg: "Enviando tu contacto...",
     leadError: "Ingresa un correo o teléfono válido, o inténtalo de nuevo.",
     follow: "Sigue el trabajo",
+    joinTeam: "Únete a Nuestro Equipo",
+    joinTeamHint: "Estamos contratando — postúlate en 2 minutos.",
   },
   board: {
     hangLeft: "Idea nueva ✦",
@@ -1139,6 +1205,32 @@ const es: Dict = {
     servicesTitle: "Servicios",
     contactTitle: "Contacto",
     rights: "Todos los derechos reservados.",
+  },
+  careers: {
+    kicker: "Empleo",
+    heading: "Únete al equipo de Anovic.",
+    subtitle: "Elige el puesto que encaja contigo y postúlate en un par de minutos. Siempre buscamos gente creativa y capaz que quiera crecer con nosotros.",
+    pickRole: "Elige un puesto",
+    pickRoleHint: "Toca un puesto para abrir su formulario de solicitud.",
+    openings: "Vacantes",
+    apply: "Postular",
+    backHome: "Volver al inicio",
+    note: "¿No ves tu puesto? Envía tu CV a business@anovic.net y cuéntanos qué haces mejor.",
+    roles: [
+      "Creador de Contenido",
+      "Gerente de Cuentas / Redes Sociales",
+      "Diseñador Gráfico",
+      "Media Buyer",
+      "Ventas",
+      "Desarrollador de Negocio",
+      "Recursos Humanos",
+      "Contador",
+      "Operaciones",
+      "Moderador",
+      "Modelo",
+      "Tecnología",
+      "Editor de Video",
+    ],
   },
   a11y: { backToTop: "Volver arriba", openMenu: "Abrir menú", closeMenu: "Cerrar menú", home: "Inicio de Anovic" },
   chat: {

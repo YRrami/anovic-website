@@ -1,0 +1,420 @@
+/* =========================================================
+   CAREERS / JOIN PAGE
+   Reuses the site's paper-studio theme (paper-app, header,
+   footer, section-kicker, marker-highlight live in test.css).
+   ========================================================= */
+
+.careers-shell {
+  position: relative;
+  z-index: 10;
+}
+
+/* Decorative background orbits */
+.careers-orbit {
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(26px);
+  opacity: 0.7;
+}
+
+.careers-orbit-one {
+  left: -7%;
+  top: -4%;
+  width: 230px;
+  height: 230px;
+  background: rgba(168, 85, 247, 0.2);
+}
+
+.careers-orbit-two {
+  right: -6%;
+  top: 30%;
+  width: 280px;
+  height: 280px;
+  background: rgba(190, 242, 100, 0.28);
+}
+
+/* Head card layout */
+.careers-head-grid {
+  display: grid;
+  gap: 22px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .careers-head-grid {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+.careers-head-badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 150px;
+  border: 1px solid rgba(41, 37, 36, 0.12);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 80% 12%, rgba(168, 85, 247, 0.2), transparent 40%),
+    linear-gradient(135deg, rgba(28, 25, 23, 0.97), rgba(45, 33, 58, 0.97));
+  padding: 22px 26px;
+  transform: rotate(2deg);
+  box-shadow: 0 18px 36px rgba(28, 25, 23, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.careers-badge-stars {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.careers-badge-stars span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #d9f99d;
+  box-shadow: 0 0 0 3px rgba(217, 249, 157, 0.16);
+}
+
+.careers-head-badge strong {
+  color: #ffffff;
+  font-size: 2.6rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.careers-badge-label {
+  color: rgba(217, 249, 157, 0.92);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.careers-head-card {
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(41, 37, 36, 0.12);
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(190, 242, 100, 0.22), transparent 24%),
+    radial-gradient(circle at 10% 86%, rgba(168, 85, 247, 0.16), transparent 26%),
+    rgba(255, 248, 232, 0.84);
+  padding: clamp(1.6rem, 4vw, 2.6rem);
+  box-shadow:
+    0 22px 48px rgba(80, 52, 25, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.careers-head-card h1 {
+  max-width: 18ch;
+  margin: 6px 0 0;
+  color: #1c1917;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.careers-head-card p {
+  max-width: 56ch;
+  margin: 16px 0 0;
+  color: #57534e;
+  font-size: clamp(0.98rem, 2vw, 1.12rem);
+  font-weight: 720;
+  line-height: 1.75;
+}
+
+.careers-openings-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 14px;
+  margin: 36px 0 18px;
+}
+
+.careers-openings-row h2 {
+  margin: 0;
+  color: #1c1917;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 950;
+  letter-spacing: -0.03em;
+}
+
+.careers-openings-row span {
+  color: #78716c;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.careers-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #1c1917;
+  color: #d9f99d;
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+/* Role buttons grid */
+.role-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 620px) {
+  .role-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .role-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.role-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(41, 37, 36, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 16px 16px 16px 14px;
+  box-shadow:
+    0 14px 30px rgba(80, 52, 25, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+/* sliding sheen on hover */
+.role-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 34%, rgba(255, 255, 255, 0.5) 50%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform 650ms ease;
+}
+
+.role-card:hover {
+  transform: translateY(-4px) rotate(-0.4deg);
+  border-color: rgba(41, 37, 36, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 26px 50px rgba(80, 52, 25, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.role-card:hover::before {
+  transform: translateX(120%);
+}
+
+/* Icon tile with a small numbered badge */
+.role-card-ico {
+  position: relative;
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background: rgba(28, 25, 23, 0.06);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.role-card-no {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #1c1917;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 950;
+  font-style: normal;
+}
+
+[dir="rtl"] .role-card-no {
+  right: auto;
+  left: -6px;
+}
+
+.role-card-text {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.role-card-name {
+  color: #1c1917;
+  font-size: 1.02rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.role-card-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #7e22ce;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.role-card:hover .role-card-apply {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.role-card-arrow {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(28, 25, 23, 0.06);
+  color: #1c1917;
+  font-size: 0.95rem;
+  transition: transform 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+.role-card:hover .role-card-arrow {
+  transform: translate(2px, -2px) rotate(-8deg);
+  background: #7e22ce;
+  color: #ffffff;
+}
+
+[dir="rtl"] .role-card:hover .role-card-arrow {
+  transform: translate(-2px, -2px) rotate(8deg);
+}
+
+/* Accent tints cycled across the icon tiles (paper-note palette) */
+.role-card:nth-child(6n + 1) .role-card-ico { background: rgba(168, 85, 247, 0.16); }
+.role-card:nth-child(6n + 2) .role-card-ico { background: rgba(132, 204, 22, 0.18); }
+.role-card:nth-child(6n + 3) .role-card-ico { background: rgba(251, 146, 60, 0.18); }
+.role-card:nth-child(6n + 4) .role-card-ico { background: rgba(41, 37, 36, 0.08); }
+.role-card:nth-child(6n + 5) .role-card-ico { background: rgba(217, 70, 239, 0.16); }
+.role-card:nth-child(6n + 6) .role-card-ico { background: rgba(101, 163, 13, 0.18); }
+
+.role-card:focus-visible {
+  outline: 3px solid rgba(168, 85, 247, 0.55);
+  outline-offset: 3px;
+}
+
+/* "Don't see your role" note */
+.careers-note-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+  border: 1px dashed rgba(41, 37, 36, 0.22);
+  border-radius: 24px;
+  background: rgba(236, 252, 203, 0.45);
+  padding: 18px 20px;
+}
+
+.careers-note-card span {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #1c1917;
+  color: #d9f99d;
+  font-size: 1.05rem;
+}
+
+.careers-note-card p {
+  flex: 1 1 240px;
+  margin: 0;
+  color: #44403c;
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+/* Back to home */
+.careers-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 26px;
+  border: 1px solid rgba(41, 37, 36, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 11px 18px;
+  color: #1c1917;
+  font-size: 0.86rem;
+  font-weight: 950;
+  transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+}
+
+.careers-back:hover {
+  transform: translateY(-2px);
+  border-color: rgba(41, 37, 36, 0.28);
+  background: #ffffff;
+}
+
+.careers-back:focus-visible {
+  outline: 3px solid rgba(217, 249, 157, 0.78);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-card,
+  .role-card::before,
+  .role-card-arrow,
+  .careers-back {
+    transition: none;
+  }
+
+  .role-card:hover,
+  .careers-back:hover {
+    transform: none;
+  }
+
+  .role-card:hover::before {
+    transform: translateX(-120%);
+  }
+}

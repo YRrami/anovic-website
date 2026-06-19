@@ -245,8 +245,9 @@ const socialLinks = [
     ],
   },
   {
+    // 👇 Confirm / replace with Anovic's real LinkedIn page URL.
     label: "LinkedIn",
-    href: "#",
+    href: "https://www.linkedin.com/company/anovic-agency/",
     paths: [
       "M6.55 8.75H3.4V21h3.15V8.75ZM5 3a1.84 1.84 0 1 0 0 3.68A1.84 1.84 0 0 0 5 3Zm16 11.16c0-3.28-1.75-5.39-4.6-5.39-1.67 0-2.78.92-3.24 1.8h-.05V8.75h-3.02V21h3.15v-6.06c0-1.6.3-3.14 2.28-3.14 1.95 0 1.98 1.82 1.98 3.24V21H21v-6.84Z",
     ],
@@ -645,50 +646,52 @@ export default function Home() {
       {/* Hero */}
       <section
         id="home"
-        className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-center gap-12 px-4 pb-16 pt-28 sm:px-5 sm:pt-32 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 xl:gap-20"
+        className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-center gap-7 px-4 pb-10 pt-24 sm:px-5 sm:pt-28 md:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12 xl:gap-16"
       >
         <div className="hero-copy relative">
-          <div className="hero-badge mb-6 inline-flex -rotate-1 items-center gap-2 rounded-full border border-stone-950/10 bg-white/70 px-4 py-2 text-xs font-black text-stone-600 shadow-sm backdrop-blur sm:mb-7 sm:text-sm">
-            <span className="hero-badge-dot h-2.5 w-2.5 rounded-full bg-lime-300 ring-4 ring-lime-200/70" />
+          <div className="hero-badge mb-5 inline-flex -rotate-1 items-center gap-2 rounded-full border border-stone-950/10 bg-white/70 px-3.5 py-1.5 text-[11px] font-black text-stone-600 shadow-sm backdrop-blur sm:mb-6 sm:text-xs">
+            <span className="hero-badge-dot h-2 w-2 rounded-full bg-lime-300 ring-4 ring-lime-200/70" />
             {t.hero.badge}
           </div>
 
-          <h1 className="max-w-4xl text-[3.15rem] font-black leading-[0.92] tracking-tight text-stone-950 sm:text-6xl lg:text-7xl xl:text-8xl">
+          <h1 className="max-w-3xl text-[2.7rem] font-black leading-[0.95] tracking-tight text-stone-950 sm:text-[3.2rem] lg:text-[3.5rem] xl:text-[4.25rem]">
             {t.hero.h1a}
             <br />
             {t.hero.h1b}
             <br />
             <span className="relative inline-block">
               {t.hero.h1c}
-              <span className="hero-marker absolute bottom-1 left-0 -z-10 h-5 w-full rotate-[-1deg] bg-lime-300/80 sm:h-6 lg:h-7" />
+              <span className="hero-marker absolute bottom-0.5 left-0 -z-10 h-4 w-full rotate-[-1deg] bg-lime-300/80 sm:h-5 lg:h-6" />
             </span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-8 text-stone-600 sm:mt-7 sm:text-lg">
+          <p className="mt-4 max-w-md text-[15px] leading-7 text-stone-600 sm:mt-5 sm:text-base">
             {t.hero.subtitle}
           </p>
 
           <form
             onSubmit={handleLeadSubmit}
-            className="hero-lead-bar"
+            className="hero-lead"
             aria-label="Lead capture form"
           >
-            <div className="hero-lead-content">
-              <span className="hero-lead-pill">{t.hero.leadPill}</span>
-
-              <div className="hero-lead-text">
-                <strong>{t.hero.leadStrong}</strong>
-                <p>{t.hero.leadText}</p>
-              </div>
+            <div className="hero-lead-head">
+              <span className="hero-lead-tag">
+                <span className="hero-lead-tag-dot" aria-hidden="true" />
+                {t.hero.leadPill}
+              </span>
+              <p>{t.hero.leadStrong}</p>
             </div>
 
-            <div className="hero-lead-field">
+            <div className="hero-lead-row">
               <label className="sr-only" htmlFor="hero-lead-contact">
                 {t.hero.leadPlaceholder}
               </label>
 
-              <span className="hero-lead-icon" aria-hidden="true">
-                ↗
+              <span className="hero-lead-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="5" width="18" height="14" rx="3.5" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </span>
 
               <input
@@ -706,19 +709,23 @@ export default function Home() {
                 type="submit"
                 className="hero-lead-submit"
                 disabled={leadStatus === "sending"}
+                aria-label={t.hero.leadSend}
               >
-                {leadStatus === "sending" ? t.hero.leadSending : t.hero.leadSend}
+                <span className="hero-lead-submit-label">
+                  {leadStatus === "sending" ? t.hero.leadSending : t.hero.leadSend}
+                </span>
+                <span className="hero-lead-submit-ico" aria-hidden="true">→</span>
               </button>
             </div>
 
             {leadStatus !== "idle" && (
               <p
-                className={`mt-3 text-sm font-black ${
+                className={`hero-lead-status ${
                   leadStatus === "success"
-                    ? "text-lime-700"
+                    ? "is-success"
                     : leadStatus === "sending"
-                      ? "text-stone-500"
-                      : "text-red-700"
+                      ? "is-sending"
+                      : "is-error"
                 }`}
                 role="status"
               >
@@ -730,6 +737,13 @@ export default function Home() {
               </p>
             )}
           </form>
+
+          <a href="/careers" className="hero-join-btn">
+            <span className="hero-join-spark" aria-hidden="true">✦</span>
+            <span className="hero-join-label">{t.hero.joinTeam}</span>
+            <small className="hero-join-hint">{t.hero.joinTeamHint}</small>
+            <span className="hero-join-arrow" aria-hidden="true">↗</span>
+          </a>
 
           <div className="hero-social-row" aria-label="Social media links">
             <span>{t.hero.follow}</span>

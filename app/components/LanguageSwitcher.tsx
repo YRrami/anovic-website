@@ -1,82 +1,84 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "../i18n/LanguageProvider";
 import { LANGS, type Lang } from "../i18n/translations";
 
 type MenuPos = { top?: number; bottom?: number; left: number; width: number };
 
-const MENU_WIDTH = 180;
+const MENU_WIDTH = 184;
 
 export default function LanguageSwitcher({ variant = "header" }: { variant?: "header" | "drawer" }) {
   const { lang, dir, setLang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<MenuPos | null>(null);
+  const [mounted, setMounted] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
 
-  // Position the (fixed) menu relative to the button so it escapes any
-  // overflow:hidden ancestor (the glass header pill / the drawer panel).
-  const place = useCallback(() => {
-    const btn = btnRef.current;
-    if (!btn) return;
-    const r = btn.getBoundingClientRect();
+  useEffect(() => setMounted(true), []);
 
-    const vw = window.innerWidth;
-
-    if (variant === "drawer") {
-      // Drawer sits near the bottom — open upward, matching the button width.
-      const width = Math.min(Math.max(r.width, MENU_WIDTH), vw - 16);
-      setPos({
-        bottom: window.innerHeight - r.top + 10,
-        left: Math.max(8, Math.min(r.left, vw - width - 8)),
-        width,
-      });
-      return;
-    }
-
-    const width = MENU_WIDTH;
-    const left = dir === "rtl" ? r.left : r.right - width;
-    setPos({
-      top: r.bottom + 10,
-      left: Math.max(8, Math.min(left, vw - width - 8)),
-      width,
-    });
-  }, [variant, dir]);
-
-  const toggle = () => {
-    setOpen((v) => {
-      const next = !v;
-      if (next) place();
-      return next;
-    });
-  };
-
-  useEffect(() => {
+  // Position the fixed menu relative to the button (so it escapes the header
+  // pill / drawer overflow:hidden). Runs in a layout effect AFTER `open`
+  // flips true — guaranteeing `pos` is set before the menu paints.
+  useLayoutEffect(() => {
     if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (
-        wrapRef.current && !wrapRef.current.contains(e.target as Node) &&
-        !(e.target as HTMLElement).closest(".lang-switch-menu")
-      ) {
-        setOpen(false);
+
+    const clamp = (left: number, width: number, vw: number) =>
+      Math.max(8, Math.min(left, vw - width - 8));
+
+    const place = () => {
+      const btn = btnRef.current;
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      const vw = window.innerWidth;
+
+      if (variant === "drawer") {
+        const width = Math.min(Math.max(r.width, MENU_WIDTH), vw - 16);
+        setPos({ bottom: window.innerHeight - r.top + 10, left: clamp(r.left, width, vw), width });
+      } else {
+        const width = MENU_WIDTH;
+        const rawLeft = dir === "rtl" ? r.left : r.right - width;
+        setPos({ top: r.bottom + 10, left: clamp(rawLeft, width, vw), width });
       }
     };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    const reposition = () => place();
-    window.addEventListener("click", onClick);
-    window.addEventListener("keydown", onKey);
-    window.addEventListener("resize", reposition);
-    window.addEventListener("scroll", reposition, true);
+
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
     return () => {
-      window.removeEventListener("click", onClick);
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("resize", reposition);
-      window.removeEventListener("scroll", reposition, true);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
     };
-  }, [open, place]);
+  }, [open, variant, dir]);
+
+  // Close on outside pointer / Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (wrapRef.current?.contains(target)) return;
+      if (target.closest?.(".lang-switch-menu")) return;
+      setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   const choose = (code: Lang) => {
     setLang(code);
@@ -89,10 +91,7 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
         ref={btnRef}
         type="button"
         className="lang-switch-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          toggle();
-        }}
+        onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Change language"
@@ -112,7 +111,8 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
         </span>
       </button>
 
-      {open &&
+      {mounted &&
+        open &&
         pos &&
         createPortal(
           <ul
