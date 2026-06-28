@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/crm/google-import",
-      "schedule": "0 * * * *"
+      "schedule": "0 7 * * *"
     }
   ]
 }
