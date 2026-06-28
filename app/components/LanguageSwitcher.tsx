@@ -17,13 +17,10 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
   const { lang, dir, setLang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<MenuPos | null>(null);
-  const [mounted, setMounted] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
-
-  useEffect(() => setMounted(true), []);
 
   // Position the fixed menu relative to the button (so it escapes the header
   // pill / drawer overflow:hidden). Runs in a layout effect AFTER `open`
@@ -111,8 +108,7 @@ export default function LanguageSwitcher({ variant = "header" }: { variant?: "he
         </span>
       </button>
 
-      {mounted &&
-        open &&
+      {open &&
         pos &&
         createPortal(
           <ul

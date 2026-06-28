@@ -28,15 +28,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Hydrate from storage / browser preference on mount
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
-    if (stored && translations[stored]) {
-      setLangState(stored);
-      return;
-    }
-    const browser = window.navigator.language.slice(0, 2).toLowerCase();
-    if (browser === "ar" || browser === "es") {
-      setLangState(browser as Lang);
-    }
+    const id = window.setTimeout(() => {
+      const stored = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
+      if (stored && translations[stored]) {
+        setLangState(stored);
+        return;
+      }
+      const browser = window.navigator.language.slice(0, 2).toLowerCase();
+      if (browser === "ar" || browser === "es") {
+        setLangState(browser as Lang);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, []);
 
   // Keep <html lang> and <html dir> in sync with the active language

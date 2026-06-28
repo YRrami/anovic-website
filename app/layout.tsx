@@ -107,7 +107,7 @@ export default function RootLayout({
         <link rel="preload" href="/logo.png" as="image" />
       </head>
 
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <LanguageProvider>{children}</LanguageProvider>
         <Analytics />
       </body>

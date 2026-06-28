@@ -1,0 +1,122 @@
+TypeError: fetch failed
+    at async updateSession (lib\supabase\proxy.ts:76:27)
+  74 |   });
+  75 |
+> 76 |   const { data, error } = await supabase.auth.getClaims();
+     |                           ^
+  77 |   const isAuthenticated = !error && Boolean(data?.claims);
+  78 |
+  79 |   if (isProtectedTeamPath && !isAuthenticated) { {
+  [cause]: Error: getaddrinfo ENOTFOUND besuavqrbmjwscxbnqrf.supabase.co
+      at ignore-listed frames {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'besuavqrbmjwscxbnqrf.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async updateSession (lib\supabase\proxy.ts:76:27)
+  74 |   });
+  75 |
+> 76 |   const { data, error } = await supabase.auth.getClaims();
+     |                           ^
+  77 |   const isAuthenticated = !error && Boolean(data?.claims);
+  78 |
+  79 |   if (isProtectedTeamPath && !isAuthenticated) { {
+  [cause]: Error: getaddrinfo ENOTFOUND besuavqrbmjwscxbnqrf.supabase.co
+      at ignore-listed frames {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'besuavqrbmjwscxbnqrf.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async CrmLoginPage (app\crm\login\page.tsx:24:22)
+  22 |   if (config) {
+  23 |     const supabase = await createClient();
+> 24 |     const { data } = await supabase.auth.getClaims();
+     |                      ^
+  25 |     if (data?.claims?.sub) {
+  26 |       const { data: member } = await supabase.from("crm_members").select("is_active").eq("...
+  27 |       if (member?.is_active) redirect(nextPath); {
+  [cause]: Error: getaddrinfo ENOTFOUND besuavqrbmjwscxbnqrf.supabase.co
+      at ignore-listed frames {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'besuavqrbmjwscxbnqrf.supabase.co'
+  }
+}
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <RenderFromTemplateContext>
+      <ScrollAndMaybeFocusHandler cacheNode={{rsc:{...}, ...}}>
+        <InnerScrollAndFocusHandlerOld focusAndScrollRef={{scrollRef:null, ...}} cacheNode={{rsc:{...}, ...}}>
+          <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+            <LoadingBoundary name="login/" loading={null}>
+              <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <InnerLayoutRouter url="/crm/login..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                      <SegmentViewNode type="page" pagePath="crm/login/...">
+                        <SegmentTrieNode>
+                        <CrmLoginPage>
+                          <main className="crm-platfo...">
+                            <section className="mx-auto gr...">
+                              <div
+                                className="hidden max-w-xl lg:block"
+-                               bis_skin_checked="1"
+                              >
+                                <LinkComponent>
+                                <div
+                                  className="mt-16 flex h-14 w-14 items-center justify-center rounded-lg bg-indigo-600..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                              <div
+                                className="rounded-lg border border-gray-200 bg-white p-6 shadow-xl shadow-gray-200/60..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="flex items-start justify-between gap-4"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+-                                   bis_skin_checked="1"
+                                  >
+                                  ...
+                                <p>
+                                <form>
+                                <div
+                                  className="mt-6 flex items-center gap-3 border-t border-gray-200 pt-5 text-xs font-b..."
+-                                 bis_skin_checked="1"
+                                >
+                      ...
+                    ...
+          ...
+ 
+    at <unknown> (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7065:32)
+    at runWithFiberInDEV (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at completeUnitOfWork (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/johnj/Desktop/Anovic Branding/website/anovic/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)

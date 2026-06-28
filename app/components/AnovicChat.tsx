@@ -102,10 +102,13 @@ export default function AnovicChat() {
   useEffect(() => {
     if (open) {
       inputRef.current?.focus();
-      // Quick hello wave when the panel opens
-      setMood("wave");
+      // Quick hello wave when the panel opens.
+      const waveId = window.setTimeout(() => setMood("wave"), 0);
       const id = window.setTimeout(() => setMood("idle"), 1400);
-      return () => window.clearTimeout(id);
+      return () => {
+        window.clearTimeout(waveId);
+        window.clearTimeout(id);
+      };
     }
   }, [open]);
 

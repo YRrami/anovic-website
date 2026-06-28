@@ -1,0 +1,14 @@
+
+> anovic@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.137.1:3001
+- Environments: .env.local
+✓ Ready in 927ms
+- Experiments (use with caution):
+  · serverActions
+
+ GET /crm/login?next=%2Fcrm%2Fleads 200 in 773ms (next.js: 195ms, proxy.ts: 99ms, application-code: 479ms)
+ GET /crm/login?next=%2Fcrm%2Fleads 200 in 114ms (next.js: 8ms, proxy.ts: 7ms, application-code: 99ms)

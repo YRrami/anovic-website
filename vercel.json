@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/team/maintenance",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/crm/google-import",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
